@@ -24,6 +24,7 @@ model_schema = api.model('Model', {
     'created': fields.DateTime,
     'updated': fields.DateTime,
     'id': fields.Integer,
+    'name': fields.String,
     'model_serialized': fields.Raw(
         title='Metabolic Model JSON',
         description='A metabolic model serialized to JSON by cobrapy',
