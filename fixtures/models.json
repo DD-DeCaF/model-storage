@@ -1,4 +1,6 @@
-{
+{ "rest-api-fixtures":
+ [
+  {
     'created': "05/10/2016",
     'updated': "24/12/2018",
     'id': 2,
@@ -7,4 +9,15 @@
     'organism_id': 1,
     'project_id': 4,
     'default_biomass_reaction': 'BIOMASS',
+},
+{
+    'created': "05/10/2016",
+    'updated': "24/12/2018",
+    'id': 3,
+    'name': 'iJO1366'
+    'model_serialized': {"this is a model": [{"Trust me it is": "Like yeah totally bro!"}]},
+    'organism_id': 1,
+    'project_id': 4,
+    'default_biomass_reaction': 'BIOMASS',
+}]
 }
