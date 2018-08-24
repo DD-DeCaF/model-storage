@@ -19,6 +19,18 @@ from flask_restplus import Resource, fields
 
 from model_warehouse.app import api, app
 
+# TODO: Impelment schema inheritance
+input_model_schema = api.model('NewModel', {
+    'name': fields.String,
+    'model_serialized': fields.Raw(
+        title='Metabolic Model JSON',
+        description='A metabolic model serialized to JSON by cobrapy',
+        required=True, readonly=False
+    ),
+    'organism_id': fields.Integer,
+    'project_id': fields.Integer,
+    'default_biomass_reaction': fields.String,
+})
 
 model_schema = api.model('Model', {
     'created': fields.DateTime,
@@ -54,18 +66,17 @@ class Models(Resource):
     def get(self):
         """List all available models"""
         app.logger.debug("Getting stuff!")
-        return "Getting {} for ya".format(id)
+        return "Getting all models for ya"
 
-    @api.expect(model_schema)
-    @api.marshal_with(model_schema)
+    @api.expect(input_model_schema)
+    @api.marshal_with(input_model_schema)
     def post(self):
         """Create a new model (accepts an object or an array of objects)"""
         app.logger.debug("Getting stuff!")
         return post(self)
 
-    def post_one(self, data, model_id):
+    def post_one(self, data):
         """Create a single model"""
-        data['model_id'] = model_id
         return data
 
 
@@ -77,17 +88,17 @@ class Model(Resource):
     def get(self, id):
         """Return a model by ID."""
         app.logger.debug("Getting stuff!")
-        return "Displaying Model IDs".format()
+        return "Displaying Model IDs".format(id)
 
     @api.marshal_with(model_schema)
     @api.expect(model_schema)
     def put(self, id):
         """Update a model by ID."""
         app.logger.debug("Getting stuff!")
-        return "Displaying Model IDs".format()
+        return "Displaying Model IDs".format(id)
 
     def delete(self, id):
         """Delete a model by ID."""
         app.logger.debug("Getting stuff!")
-        return "Displaying Model IDs".format()
+        return "Displaying Model IDs".format(id)
 
