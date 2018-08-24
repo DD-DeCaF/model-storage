@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model_warehouse-production
+spec:
+  selector:
+    matchLabels:
+      app: model_warehouse
+      env: production
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: model_warehouse
+        env: production
+    spec:
+      containers:
+      - name: web
+        image: gcr.io/dd-decaf-cfbf6/model_warehouse:master
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ENVIRONMENT
+          value: production
+        - name: SCRIPT_NAME
+          value: /model_warehouse
+        - name: FLASK_APP
+          value: src/model_warehouse/wsgi.py
+        - name: ALLOWED_ORIGINS
+          value: https://app.dd-decaf.eu,http://localhost:4200
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: model_warehouse-production
+              key: SENTRY_DSN
+        command: ["gunicorn", "-c", "gunicorn.py", "model_warehouse.wsgi:app"]
+        resources:
+          requests:
+            cpu: "10m"
+          limits:
+            cpu: "100m"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model_warehouse-staging
+spec:
+  selector:
+    matchLabels:
+      app: model_warehouse
+      env: staging
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: model_warehouse
+        env: staging
+    spec:
+      containers:
+      - name: web
+        image: gcr.io/dd-decaf-cfbf6/model_warehouse:devel
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ENVIRONMENT
+          value: staging
+        - name: SCRIPT_NAME
+          value: /model_warehouse
+        - name: FLASK_APP
+          value: src/model_warehouse/wsgi.py
+        - name: ALLOWED_ORIGINS
+          value: https://staging.dd-decaf.eu,http://localhost:4200
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: model_warehouse-staging
+              key: SENTRY_DSN
+        command: ["gunicorn", "-c", "gunicorn.py", "model_warehouse.wsgi:app"]
+        resources:
+          requests:
+            cpu: "5m"
+          limits:
+            cpu: "100m"

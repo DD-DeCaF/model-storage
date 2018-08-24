@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: model_warehouse
+spec:
+  tls:
+  - hosts:
+    - api.dd-decaf.eu
+    - api-staging.dd-decaf.eu
+    secretName: decaf-tls
+  rules:
+  - host: api.dd-decaf.eu
+    http:
+      paths:
+      - path: /model_warehouse
+        backend:
+          serviceName: model_warehouse-production
+          servicePort: 80
+  - host: api-staging.dd-decaf.eu
+    http:
+      paths:
+      - path: /model_warehouse
+        backend:
+          serviceName: model_warehouse-staging
+          servicePort: 80
