@@ -77,6 +77,7 @@ class Models(Resource):
 
     def post_one(self, data):
         """Create a single model"""
+        print(data)
         return data
 
 
