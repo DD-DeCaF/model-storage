@@ -48,37 +48,22 @@ model_schema = api.model('Model', {
 })
 
 
-def post(obj, *args, **kwargs):
-    """Determine if the payload is a single model or multiple models."""
-    if isinstance(api.payload, dict):
-        return obj.post_one(api.payload, *args, **kwargs)
-    elif isinstance(api.payload, list):
-        return [obj.post_one(data, *args, **kwargs) for data in api.payload]
-    else:
-        raise ValueError(f"Unsupported API payload type '{type(api.payload)}'")
-
-
 @api.response(404, 'Not found')
 @api.route("/models")
 class Models(Resource):
     """Serve all available models or create new entries."""
 
     def get(self):
-        """List all available models"""
+        """List all available models."""
         app.logger.debug("Getting stuff!")
         return "Getting all models for ya"
 
     @api.expect(input_model_schema)
     @api.marshal_with(input_model_schema)
     def post(self):
-        """Create a new model (accepts an object or an array of objects)"""
+        """Create a new model."""
         app.logger.debug("Getting stuff!")
-        return post(self)
-
-    def post_one(self, data):
-        """Create a single model"""
-        print(data)
-        return data
+        return api.payload
 
 
 @api.response(404, 'Not found')

@@ -31,17 +31,8 @@ def test_models_post(client):
                   "project_id": 0,
                   "default_biomass_reaction": "string"
                 }
-    new_model2 = {
-                  "name": "string",
-                  "model_serialized": {},
-                  "organism_id": 1,
-                  "project_id": 1,
-                  "default_biomass_reaction": "string"
-                }
 
     resp = client.post("/models", json=new_model)
-    assert resp.status_code == 200
-    resp = client.post("/models", json=[new_model, new_model2])
     assert resp.status_code == 200
 
 
