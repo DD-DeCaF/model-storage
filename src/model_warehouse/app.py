@@ -19,23 +19,29 @@ import logging
 import logging.config
 
 from flask import Flask
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_restplus import Api
 from raven.contrib.flask import Sentry
+
 from werkzeug.contrib.fixers import ProxyFix
+from model_warehouse.settings import current_config
 
 
 app = Flask(__name__)
+app.config.from_object(current_config())
 api = Api(
     title="model_warehouse",
     version="0.1.0",
     description="The storage for metabolic models used by the platform",
 )
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 def init_app(application, interface):
     """Initialize the main app with config information and routes."""
-    from model_warehouse.settings import current_config
     application.config.from_object(current_config())
 
     # Configure logging

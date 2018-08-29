@@ -77,6 +77,19 @@ clean:
 logs:
 	docker-compose logs --tail="all" -f
 
+## Create databases.
+databases:
+	docker-compose up -d postgres
+	./scripts/wait_for_postgres.sh
+	docker-compose exec postgres psql -U postgres -c "create database model_warehouse;"
+	docker-compose exec postgres psql -U postgres -c "create database model_warehouse_test;"
+	docker-compose run --rm web flask db upgrade
+	docker-compose stop
+
+## Open shell in a new temporary container
+shell:
+	docker-compose run --rm web ash
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################

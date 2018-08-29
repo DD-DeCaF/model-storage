@@ -22,10 +22,12 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
     command: gunicorn -c gunicorn.py model_warehouse.wsgi:app
 
-# Additional services that the `web` service `depends_on` should usually only
-# be on the default network and not exposed on the general network, i.e.,
-# networks:
-#   - default
+  postgres:
+    image: postgres:9.6-alpine
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - default
 
 networks:
   DD-DeCaF:

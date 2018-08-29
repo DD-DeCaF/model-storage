@@ -28,6 +28,8 @@ RUN addgroup -S -g "${GID}" "${APP_USER}" && \
 
 WORKDIR "${CWD}"
 
+RUN apk add --update --no-cache postgresql-dev g++
+
 COPY requirements.in dev-requirements.in ./
 
 # `wsgi-requirements.txt` comes from the parent image and needs to be part of

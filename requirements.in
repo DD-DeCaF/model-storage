@@ -2,3 +2,8 @@ Flask
 Flask-Cors
 flask-restplus
 raven[flask]
+Alembic
+Flask-Migrate
+flask-sqlalchemy
+psycopg2-binary
+sqlalchemy
