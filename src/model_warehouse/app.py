@@ -30,6 +30,7 @@ from .settings import current_config
 from .models import Model
 import json
 
+
 app = Flask(__name__)
 app.config.from_object(current_config())
 api = Api(
@@ -69,7 +70,7 @@ def init_app(application, interface, db):
     application.wsgi_app = ProxyFix(application.wsgi_app)
 
     # Add Flask CLI command to install fixtures in the database
-    #logger.debug("Registering CLI commands")
+    app.logger.debug("Registering CLI commands")
 
     @application.cli.command()
     def make_fixtures():
@@ -80,4 +81,4 @@ def init_app(application, interface, db):
             db.session.add(model)
         db.session.commit()
 
-    #logger.info("App initialization complete")
+    app.logger.info("App initialization complete")

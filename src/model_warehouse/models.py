@@ -14,16 +14,23 @@
 
 
 from datetime import datetime
-
 from flask_sqlalchemy import SQLAlchemy
 
 
 db = SQLAlchemy()
 
 
+def dump_datetime(value):
+    """Deserialize datetime object into string form for JSON processing."""
+    if value is None:
+        return None
+    return [value.strftime("%Y-%m-%d"), value.strftime("%H:%M:%S")]
+
+
 class TimestampMixin(object):
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated = db.Column(db.DateTime, onupdate=datetime.utcnow)
+
 
 class Model(TimestampMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,3 +39,20 @@ class Model(TimestampMixin, db.Model):
     organism_id = db.Column(db.String(256), nullable=False)
     project_id = db.Column(db.Integer)
     default_biomass_reaction = db.Column(db.String(256), nullable=False)
+
+    def __repr__(self):
+        """Return a printable representation."""
+        return f"<{self.__class__.__name__} {self.id}: {self.name}>"
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {
+            'id': self.id,
+            'created': dump_datetime(self.created),
+            'updated': dump_datetime(self.updated),
+            'model_serialized': self.model_serialized,
+            'organism_id': self.organism_id,
+            'project_id': self.project_id,
+            'default_biomass_reaction': self.default_biomass_reaction
+        }

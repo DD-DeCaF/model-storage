@@ -16,9 +16,10 @@
 """Implement RESTful API endpoints using resources."""
 
 from flask_restplus import Resource, fields
+from flask.json import jsonify
 
-from model_warehouse.app import api, app
-from model_warehouse.models import Model
+from .app import api, app
+from .models import Model
 
 
 # TODO: Impelment schema inheritance
@@ -57,20 +58,23 @@ class Models(Resource):
 
     def get(self):
         """List all available models."""
-        app.logger.debug("Getting stuff!")
-        return "Getting all models for ya"
+        app.logger.debug("Retrieving all models")
+        query_result = Model.query.all()
+        return jsonify(json_list=[i.serialize for i in query_result])
+
 
     @api.expect(input_model_schema)
     @api.marshal_with(input_model_schema)
     def post(self):
         """Create a new model."""
-        app.logger.debug("Getting stuff!")
+        app.logger.debug("Creating a new model in the model warehouse")
+
         return api.payload
 
 
 @api.response(404, 'Not found')
 @api.route("/models/<int:id>",)
-class Model(Resource):
+class IndvModel(Resource):
     """Retrieve, update or delete a single model."""
 
     def get(self, id):

@@ -18,12 +18,15 @@
 import json
 
 
-def test_models_get(client):
+def test_models_get(client, db, model):
+    """Test the /models GET API supposed to return all models in the DB."""
+    db.session.commit()
     resp = client.get("/models")
     assert resp.status_code == 200
 
 
 def test_models_post(client):
+    """Test the /models POST API supposed to post a single model to the DB."""
     new_model = {
                   "name": "string",
                   "model_serialized": {},
@@ -36,12 +39,20 @@ def test_models_post(client):
     assert resp.status_code == 200
 
 
-def test_model_get(client):
+def test_indvmodel_get(client):
+    """
+    Test the /models/<id> GET API supposed to get a single model by ID.
+
+    """
     resp = client.get("/models/1")
     assert resp.status_code == 200
 
 
-def test_model_put(client):
+def test_indvmodel_put(client):
+    """
+    Test the /models/<id> PUT API supposed to modify a single model by ID.
+
+    """
     updated_model = {
                       "created": "2018-08-24T13:53:42.030Z",
                       "updated": "2018-08-24T13:53:42.030Z",
@@ -56,6 +67,10 @@ def test_model_put(client):
     assert resp.status_code == 200
 
 
-def test_model_delete(client):
+def test_indvmodel_delete(client):
+    """
+    Test the /models/<id> PUT API supposed to remove a single model by ID.
+
+    """
     resp = client.delete("/models/1")
     assert resp.status_code == 200

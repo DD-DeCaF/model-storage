@@ -20,6 +20,7 @@ import pytest
 from model_warehouse.app import api
 from model_warehouse.app import app as app_
 from model_warehouse.models import db as db_
+from model_warehouse.models import Model
 from model_warehouse.app import init_app
 
 
@@ -27,7 +28,8 @@ from model_warehouse.app import init_app
 def app():
     """Provide an initialized Flask for use in certain test cases."""
     init_app(app_, api, db_)
-    return app_
+    with app_.app_context():
+        yield app_
 
 
 @pytest.fixture(scope="session")
@@ -35,3 +37,23 @@ def client(app):
     """Provide a Flask test client to be used by almost all test cases."""
     with app.test_client() as client:
         yield client
+
+
+@pytest.fixture(scope='function')
+def db(app):
+    """Provide a database session with tables created."""
+    db_.create_all()
+    yield db_
+    db_.session.remove()
+    db_.drop_all()
+
+
+@pytest.fixture(scope='function')
+def model(db):
+    """Return a fixture with test data for the Model data model."""
+    fixture = Model(name="iJO1366", organism_id="4",
+                  project_id=4, default_biomass_reaction="BIOMASS",
+                  model_serialized={"Reactions":[{"GAPDH":"x->y"}]}
+    )
+    db.session.add(fixture)
+    return fixture
