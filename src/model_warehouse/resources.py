@@ -18,6 +18,8 @@
 from flask_restplus import Resource, fields
 
 from model_warehouse.app import api, app
+from model_warehouse.models import Model
+
 
 # TODO: Impelment schema inheritance
 input_model_schema = api.model('NewModel', {
@@ -27,7 +29,7 @@ input_model_schema = api.model('NewModel', {
         description='A metabolic model serialized to JSON by cobrapy',
         required=True, readonly=False
     ),
-    'organism_id': fields.Integer,
+    'organism_id': fields.String,
     'project_id': fields.Integer,
     'default_biomass_reaction': fields.String,
 })
@@ -42,7 +44,7 @@ model_schema = api.model('Model', {
         description='A metabolic model serialized to JSON by cobrapy',
         required=True, readonly=False
     ),
-    'organism_id': fields.Integer,
+    'organism_id': fields.String,
     'project_id': fields.Integer,
     'default_biomass_reaction': fields.String,
 })

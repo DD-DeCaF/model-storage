@@ -19,13 +19,14 @@ import pytest
 
 from model_warehouse.app import api
 from model_warehouse.app import app as app_
+from model_warehouse.models import db as db_
 from model_warehouse.app import init_app
 
 
 @pytest.fixture(scope="session")
 def app():
     """Provide an initialized Flask for use in certain test cases."""
-    init_app(app_, api)
+    init_app(app_, api, db_)
     return app_
 
 

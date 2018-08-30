@@ -20,6 +20,11 @@ services:
       - SCRIPT_NAME=${SCRIPT_NAME}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:4200}
       - SENTRY_DSN=${SENTRY_DSN}
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_DB_NAME=${POSTGRES_DB_NAME:-model_warehouse}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
+      - POSTGRES_PASS=${POSTGRES_PASS}
     command: gunicorn -c gunicorn.py model_warehouse.wsgi:app
 
   postgres:

@@ -86,6 +86,11 @@ class Default:
                 'handlers': ['console'],
             },
         }
+        self.SQLALCHEMY_DATABASE_URI = 'postgres://{POSTGRES_USERNAME}:' \
+                                       '{POSTGRES_PASS}@{POSTGRES_HOST}:{POSTGRES_PORT}/' \
+                                       '{POSTGRES_DB_NAME}'.format(
+            **os.environ)
+        self.SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class Development(Default):

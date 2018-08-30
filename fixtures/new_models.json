@@ -1,7 +1,0 @@
-{
-    'name': 'iMM127'
-    'model_serialized': {"this is a model": [{"Trust me it is": "Like yeah totally bro!"}]},
-    'organism_id': 5,
-    'project_id': None,
-    'default_biomass_reaction': 'BIO-RXN-12',
-}

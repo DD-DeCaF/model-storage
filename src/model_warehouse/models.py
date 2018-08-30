@@ -15,7 +15,11 @@
 
 from datetime import datetime
 
-from model_warehouse.app import db
+from flask_sqlalchemy import SQLAlchemy
+
+
+db = SQLAlchemy()
+
 
 class TimestampMixin(object):
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -25,7 +29,6 @@ class Model(TimestampMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256), nullable=False)
     model_serialized = db.Column(db.JSON, nullable=False)
-    organism_id = db.Column(db.Integer, db.ForeignKey('organism.id'), nullable=False)
-    organism = db.relationship(Organism)
+    organism_id = db.Column(db.String(256), nullable=False)
     project_id = db.Column(db.Integer)
     default_biomass_reaction = db.Column(db.String(256), nullable=False)

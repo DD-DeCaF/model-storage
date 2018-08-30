@@ -18,16 +18,17 @@
 import logging
 import logging.config
 
+import click
 from flask import Flask
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_restplus import Api
 from raven.contrib.flask import Sentry
 
 from werkzeug.contrib.fixers import ProxyFix
-from model_warehouse.settings import current_config
-
+from .settings import current_config
+from .models import Model
+import json
 
 app = Flask(__name__)
 app.config.from_object(current_config())
@@ -36,16 +37,16 @@ api = Api(
     version="0.1.0",
     description="The storage for metabolic models used by the platform",
 )
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 
-def init_app(application, interface):
+def init_app(application, interface, db):
     """Initialize the main app with config information and routes."""
     application.config.from_object(current_config())
 
     # Configure logging
     logging.config.dictConfig(application.config['LOGGING'])
+    Migrate(application)
+    db.init_app(application)
 
     # Configure Sentry
     if application.config['SENTRY_DSN']:
@@ -66,3 +67,17 @@ def init_app(application, interface):
     # We require this in order to serve the HTML version of the OpenAPI docs
     # via https.
     application.wsgi_app = ProxyFix(application.wsgi_app)
+
+    # Add Flask CLI command to install fixtures in the database
+    #logger.debug("Registering CLI commands")
+
+    @application.cli.command()
+    def make_fixtures():
+        with open("fixtures/models.json") as json_data:
+            fixtures = json.load(json_data)
+        for fixture in fixtures['rest-api-fixtures']:
+            model = Model(**fixture)
+            db.session.add(model)
+        db.session.commit()
+
+    #logger.info("App initialization complete")
