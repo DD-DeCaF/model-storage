@@ -40,6 +40,22 @@ spec:
             cpu: "10m"
           limits:
             cpu: "100m"
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.11
+        command: ["/cloud_sql_proxy", "-instances=dd-decaf-cfbf6:europe-west1:dd-decaf=tcp:5432", "-credential_file=/secrets/cloudsql/credentials.json"]
+        resources:
+          requests:
+            cpu: "10m"
+          limits:
+            cpu: "100m"
+        volumeMounts:
+          - name: cloudsql-instance-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+      volumes:
+      - name: cloudsql-instance-credentials
+        secret:
+          secretName: cloudsql-instance-credentials
 
 ---
 
@@ -68,12 +84,33 @@ spec:
         env:
         - name: ENVIRONMENT
           value: staging
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: model-warehouse-staging
+              key: SECRET_KEY
         - name: SCRIPT_NAME
           value: /mwarehouse
         - name: FLASK_APP
           value: src/model_warehouse/wsgi.py
         - name: ALLOWED_ORIGINS
           value: https://staging.dd-decaf.eu,http://localhost:4200
+        - name: POSTGRES_HOST
+          value: localhost
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DB_NAME
+          value: model_warehouse_staging
+        - name: POSTGRES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: model-warehouse-staging
+              key: POSTGRES_USERNAME
+        - name: POSTGRES_PASS
+          valueFrom:
+            secretKeyRef:
+              name: model-warehouse-staging
+              key: POSTGRES_PASS
         - name: SENTRY_DSN
           valueFrom:
             secretKeyRef:
@@ -85,3 +122,19 @@ spec:
             cpu: "5m"
           limits:
             cpu: "100m"
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.11
+        command: ["/cloud_sql_proxy", "-instances=dd-decaf-cfbf6:europe-west1:dd-decaf=tcp:5432", "-credential_file=/secrets/cloudsql/credentials.json"]
+        resources:
+          requests:
+            cpu: "5m"
+          limits:
+            cpu: "100m"
+        volumeMounts:
+          - name: cloudsql-instance-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+      volumes:
+      - name: cloudsql-instance-credentials
+        secret:
+          secretName: cloudsql-instance-credentials
