@@ -12,14 +12,14 @@ spec:
   - host: api.dd-decaf.eu
     http:
       paths:
-      - path: /model-warehouse
+      - path: /mwarehouse
         backend:
           serviceName: model-warehouse-production
           servicePort: 80
   - host: api-staging.dd-decaf.eu
     http:
       paths:
-      - path: /model-warehouse
+      - path: /mwarehouse
         backend:
           serviceName: model-warehouse-staging
           servicePort: 80
