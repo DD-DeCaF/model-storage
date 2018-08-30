@@ -23,6 +23,7 @@ def test_models_get(client, db, model):
     db.session.commit()
     resp = client.get("/models")
     assert resp.status_code == 200
+    assert len(resp.json) == 1
 
 
 def test_models_post(client, db):
