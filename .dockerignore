@@ -1,5 +1,6 @@
 *
 !src/
+!migrations/
 !scripts/
 !tests/
 !gunicorn.py
