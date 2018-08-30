@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model_warehouse-production
+  name: model-warehouse-production
 spec:
   selector:
     matchLabels:
-      app: model_warehouse
+      app: model-warehouse
       env: production
   replicas: 1
   template:
     metadata:
       labels:
-        app: model_warehouse
+        app: model-warehouse
         env: production
     spec:
       containers:
       - name: web
-        image: gcr.io/dd-decaf-cfbf6/model_warehouse:master
+        image: gcr.io/dd-decaf-cfbf6/model-warehouse:master
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
@@ -32,7 +32,7 @@ spec:
         - name: SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: model_warehouse-production
+              name: model-warehouse-production
               key: SENTRY_DSN
         command: ["gunicorn", "-c", "gunicorn.py", "model_warehouse.wsgi:app"]
         resources:
@@ -46,22 +46,22 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model_warehouse-staging
+  name: model-warehouse-staging
 spec:
   selector:
     matchLabels:
-      app: model_warehouse
+      app: model-warehouse
       env: staging
   replicas: 1
   template:
     metadata:
       labels:
-        app: model_warehouse
+        app: model-warehouse
         env: staging
     spec:
       containers:
       - name: web
-        image: gcr.io/dd-decaf-cfbf6/model_warehouse:devel
+        image: gcr.io/dd-decaf-cfbf6/model-warehouse:devel
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
@@ -77,7 +77,7 @@ spec:
         - name: SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: model_warehouse-staging
+              name: model-warehouse-staging
               key: SENTRY_DSN
         command: ["gunicorn", "-c", "gunicorn.py", "model_warehouse.wsgi:app"]
         resources:

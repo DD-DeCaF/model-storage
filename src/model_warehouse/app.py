@@ -34,7 +34,7 @@ import json
 app = Flask(__name__)
 app.config.from_object(current_config())
 api = Api(
-    title="model_warehouse",
+    title="model-warehouse",
     version="0.1.0",
     description="The storage for metabolic models used by the platform",
 )
