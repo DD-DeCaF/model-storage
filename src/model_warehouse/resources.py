@@ -16,10 +16,9 @@
 """Implement RESTful API endpoints using resources."""
 
 from flask_restplus import Resource, fields
-from flask.json import jsonify
 
 from .app import api, app
-from .models import Model
+from .models import Model, db
 
 
 # TODO: Impelment schema inheritance
@@ -34,6 +33,7 @@ input_model_schema = api.model('NewModel', {
     'project_id': fields.Integer,
     'default_biomass_reaction': fields.String,
 })
+
 
 model_schema = api.model('Model', {
     'created': fields.DateTime,
@@ -56,20 +56,22 @@ model_schema = api.model('Model', {
 class Models(Resource):
     """Serve all available models or create new entries."""
 
+    @api.marshal_with(model_schema)
     def get(self):
         """List all available models."""
         app.logger.debug("Retrieving all models")
-        query_result = Model.query.all()
-        return jsonify(json_list=[i.serialize for i in query_result])
+        return Model.query.all()
 
 
     @api.expect(input_model_schema)
-    @api.marshal_with(input_model_schema)
+    @api.marshal_with(model_schema)
     def post(self):
         """Create a new model."""
         app.logger.debug("Creating a new model in the model warehouse")
-
-        return api.payload
+        new_model = Model(**api.payload)
+        db.session.add(new_model)
+        db.session.commit()
+        return new_model
 
 
 @api.response(404, 'Not found')
@@ -77,20 +79,30 @@ class Models(Resource):
 class IndvModel(Resource):
     """Retrieve, update or delete a single model."""
 
+    @api.marshal_with(model_schema)
     def get(self, id):
         """Return a model by ID."""
-        app.logger.debug("Getting stuff!")
-        return "Displaying Model IDs".format(id)
+        app.logger.debug("Fetching model by ID {}".format(id))
+        return Model.query.filter(Model.id == id).one()
 
+    @api.expect(input_model_schema)
     @api.marshal_with(model_schema)
-    @api.expect(model_schema)
     def put(self, id):
         """Update a model by ID."""
-        app.logger.debug("Getting stuff!")
-        return "Displaying Model IDs".format(id)
+        app.logger.debug("Updating model by ID {}".format(id))
+        model = Model.query.filter(Model.id == id).one()
+        for key, value in api.payload.items():
+            setattr(model, key, value)
+        db.session.commit()
+        return model
 
+    @api.marshal_with(model_schema)
     def delete(self, id):
         """Delete a model by ID."""
-        app.logger.debug("Getting stuff!")
-        return "Displaying Model IDs".format(id)
+        app.logger.debug("Deleting model by ID {}".format(id))
+        model = Model.query.filter(Model.id == id).one()
+        db.session.delete(model)
+        db.session.commit()
+        return model
+
 

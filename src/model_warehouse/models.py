@@ -43,16 +43,3 @@ class Model(TimestampMixin, db.Model):
     def __repr__(self):
         """Return a printable representation."""
         return f"<{self.__class__.__name__} {self.id}: {self.name}>"
-
-    @property
-    def serialize(self):
-        """Return object data in easily serializable format"""
-        return {
-            'id': self.id,
-            'created': dump_datetime(self.created),
-            'updated': dump_datetime(self.updated),
-            'model_serialized': self.model_serialized,
-            'organism_id': self.organism_id,
-            'project_id': self.project_id,
-            'default_biomass_reaction': self.default_biomass_reaction
-        }

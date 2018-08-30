@@ -23,10 +23,3 @@ def test_commit(db, model):
     db.session.commit()
     ecoli_model = db.session.query(Model).filter(Model.name == "iJO1366").one()
     assert ecoli_model.name == "iJO1366"
-
-
-# def test_models_get(app, db, model):
-#     """Test getting models ."""
-#     Model()
-#     ecoli_model = db.session.query(Model).filter(Model.name == "iJO1366")
-#     assert ecoli_model.name == "iJO1366"
