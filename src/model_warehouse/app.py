@@ -46,8 +46,8 @@ def init_app(application, interface, db):
 
     # Configure logging
     logging.config.dictConfig(application.config['LOGGING'])
-    Migrate(application)
     db.init_app(application)
+    Migrate(application, db)
 
     # Configure Sentry
     if application.config['SENTRY_DSN']:
