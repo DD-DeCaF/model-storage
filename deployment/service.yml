@@ -1,10 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: model_warehouse-production
+  name: model-warehouse-production
 spec:
   selector:
-    app: model_warehouse
+    app: model-warehouse
     env: production
   ports:
   - name: web
@@ -17,10 +17,10 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: model_warehouse-staging
+  name: model-warehouse-staging
 spec:
   selector:
-    app: model_warehouse
+    app: model-warehouse
     env: staging
   ports:
   - name: web

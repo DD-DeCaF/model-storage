@@ -1,20 +1,20 @@
-# model_warehouse
+# model-warehouse
 
 ![master Branch](https://img.shields.io/badge/branch-master-blue.svg)
-[![master Build Status](https://travis-ci.org/DD-DeCaF/model_warehouse.svg?branch=master)](https://travis-ci.org/DD-DeCaF/model_warehouse)
-[![master Codecov](https://codecov.io/gh/DD-DeCaF/model_warehouse/branch/master/graph/badge.svg)](https://codecov.io/gh/DD-DeCaF/model_warehouse/branch/master)
-[![master Requirements Status](https://requires.io/github/DD-DeCaF/model_warehouse/requirements.svg?branch=master)](https://requires.io/github/DD-DeCaF/model_warehouse/requirements/?branch=master)
+[![master Build Status](https://travis-ci.org/DD-DeCaF/model-warehouse.svg?branch=master)](https://travis-ci.org/DD-DeCaF/model-warehouse)
+[![master Codecov](https://codecov.io/gh/DD-DeCaF/model-warehouse/branch/master/graph/badge.svg)](https://codecov.io/gh/DD-DeCaF/model-warehouse/branch/master)
+[![master Requirements Status](https://requires.io/github/DD-DeCaF/model-warehouse/requirements.svg?branch=master)](https://requires.io/github/DD-DeCaF/model-warehouse/requirements/?branch=master)
 
 ![devel Branch](https://img.shields.io/badge/branch-devel-blue.svg)
-[![devel Build Status](https://travis-ci.org/DD-DeCaF/model_warehouse.svg?branch=devel)](https://travis-ci.org/DD-DeCaF/model_warehouse)
-[![devel Codecov](https://codecov.io/gh/DD-DeCaF/model_warehouse/branch/devel/graph/badge.svg)](https://codecov.io/gh/DD-DeCaF/model_warehouse/branch/devel)
-[![devel Requirements Status](https://requires.io/github/DD-DeCaF/model_warehouse/requirements.svg?branch=devel)](https://requires.io/github/DD-DeCaF/model_warehouse/requirements/?branch=devel)
+[![devel Build Status](https://travis-ci.org/DD-DeCaF/model-warehouse.svg?branch=devel)](https://travis-ci.org/DD-DeCaF/model-warehouse)
+[![devel Codecov](https://codecov.io/gh/DD-DeCaF/model-warehouse/branch/devel/graph/badge.svg)](https://codecov.io/gh/DD-DeCaF/model-warehouse/branch/devel)
+[![devel Requirements Status](https://requires.io/github/DD-DeCaF/model-warehouse/requirements.svg?branch=devel)](https://requires.io/github/DD-DeCaF/model-warehouse/requirements/?branch=devel)
 
 ## Post-cookiecutter steps
 
 Perform the following steps after creating a new service from the cookiecutter.
 
-* Create kubernetes secrets `model_warehouse-production` and `model_warehouse-staging`. Values needed:
+* Create kubernetes secrets `model-warehouse-production` and `model-warehouse-staging`. Values needed:
   * `SECRET_KEY` (see [How to generate good secret keys](http://flask.pocoo.org/docs/1.0/quickstart/#sessions))
   * `SENTRY_DSN`
 * Review the cpu/memory limits in `deployment/deployment.yml` under `resources` ([see documentation](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/))

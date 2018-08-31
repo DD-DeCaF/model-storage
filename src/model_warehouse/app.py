@@ -34,7 +34,7 @@ import json
 app = Flask(__name__)
 app.config.from_object(current_config())
 api = Api(
-    title="model_warehouse",
+    title="model-warehouse",
     version="0.1.0",
     description="The storage for metabolic models used by the platform",
 )
@@ -46,8 +46,8 @@ def init_app(application, interface, db):
 
     # Configure logging
     logging.config.dictConfig(application.config['LOGGING'])
-    Migrate(application)
     db.init_app(application)
+    Migrate(application, db)
 
     # Configure Sentry
     if application.config['SENTRY_DSN']:

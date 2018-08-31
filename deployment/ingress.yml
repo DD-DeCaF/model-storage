@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: model_warehouse
+  name: model-warehouse
 spec:
   tls:
   - hosts:
@@ -12,14 +12,14 @@ spec:
   - host: api.dd-decaf.eu
     http:
       paths:
-      - path: /model_warehouse
+      - path: /mwarehouse
         backend:
-          serviceName: model_warehouse-production
+          serviceName: model-warehouse-production
           servicePort: 80
   - host: api-staging.dd-decaf.eu
     http:
       paths:
-      - path: /model_warehouse
+      - path: /mwarehouse
         backend:
-          serviceName: model_warehouse-staging
+          serviceName: model-warehouse-staging
           servicePort: 80
