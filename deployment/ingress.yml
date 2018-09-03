@@ -2,6 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: model-warehouse
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 100m
 spec:
   tls:
   - hosts:
