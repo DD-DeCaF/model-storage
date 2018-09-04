@@ -104,5 +104,3 @@ class IndvModel(Resource):
         db.session.delete(model)
         db.session.commit()
         return model
-
-

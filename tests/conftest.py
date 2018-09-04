@@ -19,9 +19,9 @@ import pytest
 
 from model_warehouse.app import api
 from model_warehouse.app import app as app_
-from model_warehouse.models import db as db_
-from model_warehouse.models import Model
 from model_warehouse.app import init_app
+from model_warehouse.models import Model
+from model_warehouse.models import db as db_
 
 
 @pytest.fixture(scope="session")

@@ -15,20 +15,20 @@
 
 """Expose the main Flask-RESTPlus application."""
 
+import json
 import logging
 import logging.config
 
 import click
 from flask import Flask
-from flask_migrate import Migrate
 from flask_cors import CORS
+from flask_migrate import Migrate
 from flask_restplus import Api
 from raven.contrib.flask import Sentry
-
 from werkzeug.contrib.fixers import ProxyFix
-from .settings import current_config
+
 from .models import Model
-import json
+from .settings import current_config
 
 
 app = Flask(__name__)
