@@ -15,8 +15,6 @@
 
 """Test expected functioning of the OpenAPI docs endpoints."""
 
-import json
-
 
 def test_models_get(client, db, model):
     """Test the /models GET API supposed to return all models in the DB."""
@@ -29,50 +27,41 @@ def test_models_get(client, db, model):
 def test_models_post(client, db):
     """Test the /models POST API supposed to post a single model to the DB."""
     new_model = {
-                  "name": "iML12311",
-                  "model_serialized": {"Something Here": "And Here"},
-                  "organism_id": "This is a String! 0123456789",
-                  "project_id": 5,
-                  "default_biomass_reaction": "BIOMASS"
-                }
+        "name": "iML12311",
+        "model_serialized": {"Something Here": "And Here"},
+        "organism_id": "This is a String! 0123456789",
+        "project_id": 5,
+        "default_biomass_reaction": "BIOMASS"
+    }
 
     resp = client.post("/models", json=new_model)
     assert resp.status_code == 200
 
 
 def test_indvmodel_get(client, db, model):
-    """
-    Test the /models/<id> GET API supposed to get a single model by ID.
-
-    """
+    """Test the /models/<id> GET API supposed to get a single model by ID."""
     db.session.commit()
     resp = client.get("/models/1")
     assert resp.status_code == 200
 
 
 def test_indvmodel_put(client, db, model):
-    """
-    Test the /models/<id> PUT API supposed to modify a single model by ID.
-
-    """
+    """Test the /models/<id> PUT API supposed to modify a single model by ID."""
     db.session.commit()
     updated_model = {
-                  "name": "iJO1366",
-                  "model_serialized": {"Reactions":[{"GAPDH":"x->y"},
-                                                    {"PMMO":"a->z"}]},
-                  "organism_id": "EColi",
-                  "project_id": 1,
-                  "default_biomass_reaction": "BIOMASS_RXN_ecoli"
-                }
+        "name": "iJO1366",
+        "model_serialized": {"Reactions": [{"GAPDH": "x->y"},
+                                           {"PMMO": "a->z"}]},
+        "organism_id": "EColi",
+        "project_id": 1,
+        "default_biomass_reaction": "BIOMASS_RXN_ecoli"
+    }
     resp = client.put("/models/1", json=updated_model)
     assert resp.status_code == 200
 
 
 def test_indvmodel_delete(client, db, model):
-    """
-    Test the /models/<id> PUT API supposed to remove a single model by ID.
-
-    """
+    """Test the /models/<id> PUT API supposed to remove a single model by ID."""
     db.session.commit()
     resp = client.delete("/models/1")
     assert resp.status_code == 200

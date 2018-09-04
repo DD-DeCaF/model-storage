@@ -52,8 +52,7 @@ def db(app):
 def model(db):
     """Return a fixture with test data for the Model data model."""
     fixture = Model(name="iJO1366", organism_id="4",
-                  project_id=4, default_biomass_reaction="BIOMASS",
-                  model_serialized={"Reactions":[{"GAPDH":"x->y"}]}
-    )
+                    project_id=4, default_biomass_reaction="BIOMASS",
+                    model_serialized={"Reactions": [{"GAPDH": "x->y"}]})
     db.session.add(fixture)
     return fixture

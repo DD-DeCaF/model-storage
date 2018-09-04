@@ -19,7 +19,6 @@ import json
 import logging
 import logging.config
 
-import click
 from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -56,7 +55,7 @@ def init_app(application, interface, db):
         sentry.init_app(application)
 
     # Add routes and resources.
-    from model_warehouse import resources
+    from model_warehouse import resources  # noqa
     interface.init_app(application)
 
     # Add CORS information for all resources.

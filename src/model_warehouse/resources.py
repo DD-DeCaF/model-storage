@@ -62,7 +62,6 @@ class Models(Resource):
         app.logger.debug("Retrieving all models")
         return Model.query.all()
 
-
     @api.expect(input_model_schema)
     @api.marshal_with(model_schema)
     def post(self):
