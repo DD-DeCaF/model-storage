@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile
     image: gcr.io/dd-decaf-cfbf6/model-warehouse:${IMAGE_TAG:-latest}
+    depends_on:
+      - postgres
     networks:
       default:
       DD-DeCaF:
