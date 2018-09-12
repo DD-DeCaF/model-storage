@@ -37,6 +37,12 @@ input_model_schema = api.model('NewModel', {
 })
 
 
+model_list = api.model('Model', {
+    'id': fields.Integer,
+    'name': fields.String,
+})
+
+
 model_schema = api.model('Model', {
     'created': fields.DateTime,
     'updated': fields.DateTime,
@@ -57,7 +63,7 @@ model_schema = api.model('Model', {
 class Models(Resource):
     """Serve all available models or create new entries."""
 
-    @api.marshal_with(model_schema)
+    @api.marshal_with(model_list)
     def get(self):
         """List all available models."""
         app.logger.debug("Retrieving all models")
