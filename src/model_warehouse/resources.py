@@ -23,9 +23,13 @@ from .app import api, app
 from .models import Model, db
 
 
-# TODO: Impelment schema inheritance
-input_model_schema = api.model('NewModel', {
+model_header = api.model('ModelHeader', {
+    'id': fields.Integer,
     'name': fields.String,
+})
+
+
+model = api.inherit('Model', model_header, {
     'model_serialized': fields.Raw(
         title='Metabolic Model JSON',
         description='A metabolic model serialized to JSON by cobrapy',
@@ -37,25 +41,9 @@ input_model_schema = api.model('NewModel', {
 })
 
 
-model_list = api.model('Model', {
-    'id': fields.Integer,
-    'name': fields.String,
-})
-
-
-model_schema = api.model('Model', {
+model_full = api.inherit('ModelFull', model, {
     'created': fields.DateTime,
     'updated': fields.DateTime,
-    'id': fields.Integer,
-    'name': fields.String,
-    'model_serialized': fields.Raw(
-        title='Metabolic Model JSON',
-        description='A metabolic model serialized to JSON by cobrapy',
-        required=True, readonly=False
-    ),
-    'organism_id': fields.String,
-    'project_id': fields.Integer,
-    'default_biomass_reaction': fields.String,
 })
 
 
@@ -63,14 +51,14 @@ model_schema = api.model('Model', {
 class Models(Resource):
     """Serve all available models or create new entries."""
 
-    @api.marshal_with(model_list)
+    @api.marshal_with(model_header)
     def get(self):
         """List all available models."""
         app.logger.debug("Retrieving all models")
         return Model.query.all()
 
-    @api.expect(input_model_schema)
-    @api.marshal_with(model_schema)
+    @api.expect(model)
+    @api.marshal_with(model_full)
     def post(self):
         """Create a new model."""
         app.logger.debug("Creating a new model in the model warehouse")
@@ -85,7 +73,7 @@ class Models(Resource):
 class IndvModel(Resource):
     """Retrieve, update or delete a single model."""
 
-    @api.marshal_with(model_schema)
+    @api.marshal_with(model_full)
     def get(self, id):
         """Return a model by ID."""
         app.logger.debug("Fetching model by ID {}".format(id))
@@ -94,8 +82,8 @@ class IndvModel(Resource):
         except NoResultFound:
             abort(404, f"Cannot find any model with id {id}")
 
-    @api.expect(input_model_schema)
-    @api.marshal_with(model_schema)
+    @api.expect(model)
+    @api.marshal_with(model_full)
     def put(self, id):
         """Update a model by ID."""
         app.logger.debug("Updating model by ID {}".format(id))
@@ -108,7 +96,7 @@ class IndvModel(Resource):
         db.session.commit()
         return model
 
-    @api.marshal_with(model_schema)
+    @api.marshal_with(model_full)
     def delete(self, id):
         """Delete a model by ID."""
         app.logger.debug("Deleting model by ID {}".format(id))
