@@ -26,6 +26,8 @@ from .models import Model, db
 model_header = api.model('ModelHeader', {
     'id': fields.Integer,
     'name': fields.String,
+    'organism_id': fields.String,
+    'project_id': fields.Integer,
 })
 
 
