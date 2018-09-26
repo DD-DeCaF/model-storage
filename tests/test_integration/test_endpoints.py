@@ -68,7 +68,12 @@ def test_indvmodel_delete(client, db, model):
 
 
 def test_indvmodel_not_found(client, db):
-    """Test that 404 is returned for any GET/PUT/DELETE request to a non-existing model."""
+    """
+    Test requests for non-existing models.
+
+    404 should be returned for any GET/PUT/DELETE request to a non-existing
+    model id.
+    """
     resp = client.get("/models/1")
     assert resp.status_code == 404
 
