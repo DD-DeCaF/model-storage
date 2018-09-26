@@ -53,8 +53,8 @@ safety:
 
 ## Run the tests.
 test:
-	docker-compose run --rm -e ENVIRONMENT=testing web \
-		pytest --cov=src/model_warehouse
+	docker-compose run --rm -e ENVIRONMENT=testing -e \
+		POSTGRES_DB_NAME=model_warehouse_test web pytest --cov=src/model_warehouse
 
 ## Run the tests and report coverage (see https://docs.codecov.io/docs/testing-with-docker).
 shared := /tmp/coverage
