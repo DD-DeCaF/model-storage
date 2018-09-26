@@ -106,6 +106,9 @@ class Testing(Default):
         """Initialize the testing environment configuration."""
         super().__init__()
         self.TESTING = True
+        self.SQLALCHEMY_DATABASE_URI = (
+            'postgres://postgres:@postgres:5432/model_warehouse_test'
+        )
 
 
 class Production(Default):
