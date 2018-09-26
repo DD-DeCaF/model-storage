@@ -65,3 +65,15 @@ def test_indvmodel_delete(client, db, model):
     db.session.commit()
     resp = client.delete("/models/1")
     assert resp.status_code == 200
+
+
+def test_indvmodel_not_found(client, db):
+    """Test that 404 is returned for any GET/PUT/DELETE request to a non-existing model."""
+    resp = client.get("/models/1")
+    assert resp.status_code == 404
+
+    resp = client.put("/models/1")
+    assert resp.status_code == 404
+
+    resp = client.delete("/models/1")
+    assert resp.status_code == 404
