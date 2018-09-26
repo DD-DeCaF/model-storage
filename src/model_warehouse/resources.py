@@ -15,7 +15,9 @@
 
 """Implement RESTful API endpoints using resources."""
 
+from flask import abort
 from flask_restplus import Resource, fields
+from sqlalchemy.orm.exc import NoResultFound
 
 from .app import api, app
 from .models import Model, db
@@ -51,7 +53,6 @@ model_schema = api.model('Model', {
 })
 
 
-@api.response(404, 'Not found')
 @api.route("/models")
 class Models(Resource):
     """Serve all available models or create new entries."""
@@ -82,14 +83,20 @@ class IndvModel(Resource):
     def get(self, id):
         """Return a model by ID."""
         app.logger.debug("Fetching model by ID {}".format(id))
-        return Model.query.filter(Model.id == id).one()
+        try:
+            return Model.query.filter(Model.id == id).one()
+        except NoResultFound:
+            abort(404, f"Cannot find any model with id {id}")
 
     @api.expect(input_model_schema)
     @api.marshal_with(model_schema)
     def put(self, id):
         """Update a model by ID."""
         app.logger.debug("Updating model by ID {}".format(id))
-        model = Model.query.filter(Model.id == id).one()
+        try:
+            model = Model.query.filter(Model.id == id).one()
+        except NoResultFound:
+            abort(404, f"Cannot find any model with id {id}")
         for key, value in api.payload.items():
             setattr(model, key, value)
         db.session.commit()
@@ -99,7 +106,10 @@ class IndvModel(Resource):
     def delete(self, id):
         """Delete a model by ID."""
         app.logger.debug("Deleting model by ID {}".format(id))
-        model = Model.query.filter(Model.id == id).one()
+        try:
+            model = Model.query.filter(Model.id == id).one()
+        except NoResultFound:
+            abort(404, f"Cannot find any model with id {id}")
         db.session.delete(model)
         db.session.commit()
         return model
