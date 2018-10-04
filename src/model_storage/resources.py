@@ -81,7 +81,7 @@ class IndvModel(MethodResource):
     @marshal_with(None, code=404)
     def get(self, id):
         """Return a model by ID."""
-        logger.debug("Fetching model by ID {}".format(id))
+        logger.debug(f"Fetching model by ID {id}.")
         try:
             return Model.query.filter(
                 Model.id == id
@@ -90,18 +90,18 @@ class IndvModel(MethodResource):
                 Model.project_id.is_(None)
             ).one()
         except NoResultFound:
-            abort(404, f"Cannot find any model with id {id}")
+            abort(404, f"Cannot find any model with ID {id}.")
 
     @use_kwargs(ModelSchema(exclude=('id',), partial=True))
     @marshal_with(ModelSchema)
     @jwt_required
     def put(self, id, **payload):
         """Update a model by ID."""
-        logger.debug("Updating model by ID {}".format(id))
+        logger.debug(f"Updating model with ID {id}.")
         try:
             model = Model.query.filter(Model.id == id).one()
         except NoResultFound:
-            abort(404, f"Cannot find any model with id {id}")
+            abort(404, f"Cannot find any model with ID {id}.")
         jwt_require_claim(model.project_id, 'write')
         for key, value in payload.items():
             setattr(model, key, value)
@@ -113,11 +113,11 @@ class IndvModel(MethodResource):
     @jwt_required
     def delete(self, id):
         """Delete a model by ID."""
-        logger.debug("Deleting model by ID {}".format(id))
+        logger.debug(f"Deleting model with ID {id}.")
         try:
             model = Model.query.filter(Model.id == id).one()
         except NoResultFound:
-            abort(404, f"Cannot find any model with id {id}")
+            abort(404, f"Cannot find any model with ID {id}.")
         jwt_require_claim(model.project_id, 'admin')
         db.session.delete(model)
         db.session.commit()
