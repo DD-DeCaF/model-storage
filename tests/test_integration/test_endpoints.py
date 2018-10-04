@@ -15,10 +15,11 @@
 
 """Test expected functioning of the OpenAPI docs endpoints."""
 
+import pytest
+
 
 def test_models_get(client, db, models):
     """Test the /models GET API supposed to return all models in the DB."""
-    db.session.commit()
     resp = client.get("/models")
     assert resp.status_code == 200
     assert len(resp.json) == 1
@@ -41,13 +42,17 @@ def test_models_post(client, db, tokens):
     assert resp.headers["Location"].endswith(f"/models/{resp.json['id']}")
 
 
-def test_indvmodel_get(client, db, models, tokens):
+@pytest.mark.parametrize("url, code", [
+    ("/models/1", 200),
+    ("/models/10", 404),
+])
+def test_indvmodel_get(client, db, models, tokens, url, code):
     """Test the /models/<id> GET API supposed to get a single model by ID."""
     db.session.commit()
-    resp = client.get("/models/1", headers={
+    resp = client.get(url, headers={
         'Authorization': f"Bearer {tokens['read']}",
     })
-    assert resp.status_code == 200
+    assert resp.status_code == code
 
 
 def test_indvmodel_put(client, db, models, tokens):
@@ -67,13 +72,17 @@ def test_indvmodel_put(client, db, models, tokens):
     assert resp.status_code == 204
 
 
-def test_indvmodel_delete(client, db, models, tokens):
+@pytest.mark.parametrize("url, code", [
+    ("/models/1", 204),
+    ("/models/10", 404),
+])
+def test_indvmodel_delete(client, db, models, tokens, url, code):
     """Test the /models/<id> PUT API supposed to remove a single model by ID."""
     db.session.commit()
-    resp = client.delete("/models/1", headers={
+    resp = client.delete(url, headers={
         'Authorization': f"Bearer {tokens['admin']}",
     })
-    assert resp.status_code == 204
+    assert resp.status_code == code
 
 
 def test_indvmodel_not_found(client, db, tokens):
