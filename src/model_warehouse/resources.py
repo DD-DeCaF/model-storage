@@ -57,7 +57,12 @@ class Models(Resource):
     def get(self):
         """List all available models."""
         app.logger.debug("Retrieving all models")
-        return Model.query.all()
+        return Model.query.with_entities(
+            Model.id,
+            Model.name,
+            Model.organism_id,
+            Model.project_id,
+        ).all()
 
     @api.expect(model)
     @api.marshal_with(model_full)
