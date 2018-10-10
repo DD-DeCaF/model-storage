@@ -17,6 +17,7 @@
 
 from flask import abort
 from flask_restplus import Resource, fields
+from sqlalchemy.orm import load_only
 from sqlalchemy.orm.exc import NoResultFound
 
 from .app import api, app
@@ -57,12 +58,12 @@ class Models(Resource):
     def get(self):
         """List all available models."""
         app.logger.debug("Retrieving all models")
-        return Model.query.with_entities(
+        return Model.query.options(load_only(
             Model.id,
             Model.name,
             Model.organism_id,
             Model.project_id,
-        ).all()
+        )).all()
 
     @api.expect(model)
     @api.marshal_with(model_full)
