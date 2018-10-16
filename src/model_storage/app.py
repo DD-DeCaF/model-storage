@@ -26,6 +26,7 @@ from flask_restplus import Api
 from raven.contrib.flask import Sentry
 from werkzeug.contrib.fixers import ProxyFix
 
+from . import jwt
 from .models import Model
 from .settings import current_config
 
@@ -60,6 +61,9 @@ def init_app(application, interface, db):
 
     # Add CORS information for all resources.
     CORS(application)
+
+    # Add JWT middleware
+    jwt.init_app(application)
 
     # Please keep in mind that it is a security issue to use such a middleware
     # in a non-proxy setup because it will blindly trust the incoming headers

@@ -15,12 +15,13 @@
 
 """Implement RESTful API endpoints using resources."""
 
-from flask import abort
+from flask import abort, g
 from flask_restplus import Resource, fields
 from sqlalchemy.orm import load_only
 from sqlalchemy.orm.exc import NoResultFound
 
 from .app import api, app
+from .jwt import jwt_required, jwt_require_claim
 from .models import Model, db
 
 
@@ -63,13 +64,19 @@ class Models(Resource):
             Model.name,
             Model.organism_id,
             Model.project_id,
-        )).all()
+        )).filter(
+            Model.project_id.in_([int(id) for id in g.jwt_claims['prj'].keys()])
+            | Model.project_id.is_(None)
+        ).all()
 
     @api.expect(model)
     @api.marshal_with(model_full)
+    @jwt_required
     def post(self):
         """Create a new model."""
         app.logger.debug("Creating a new model in the model storage")
+        if 'project_id' in api.payload:
+            jwt_require_claim(api.payload['project_id'], 'write')
         new_model = Model(**api.payload)
         db.session.add(new_model)
         db.session.commit()
@@ -86,12 +93,18 @@ class IndvModel(Resource):
         """Return a model by ID."""
         app.logger.debug("Fetching model by ID {}".format(id))
         try:
-            return Model.query.filter(Model.id == id).one()
+            return Model.query.filter(
+                Model.id == id
+            ).filter(
+                Model.project_id.in_([int(id) for id in g.jwt_claims['prj'].keys()])
+                | Model.project_id.is_(None)
+            ).one()
         except NoResultFound:
             abort(404, f"Cannot find any model with id {id}")
 
     @api.expect(model)
     @api.marshal_with(model_full)
+    @jwt_required
     def put(self, id):
         """Update a model by ID."""
         app.logger.debug("Updating model by ID {}".format(id))
@@ -99,12 +112,14 @@ class IndvModel(Resource):
             model = Model.query.filter(Model.id == id).one()
         except NoResultFound:
             abort(404, f"Cannot find any model with id {id}")
+        jwt_require_claim(model.project_id, 'write')
         for key, value in api.payload.items():
             setattr(model, key, value)
         db.session.commit()
         return model
 
     @api.marshal_with(model_full)
+    @jwt_required
     def delete(self, id):
         """Delete a model by ID."""
         app.logger.debug("Deleting model by ID {}".format(id))
@@ -112,6 +127,7 @@ class IndvModel(Resource):
             model = Model.query.filter(Model.id == id).one()
         except NoResultFound:
             abort(404, f"Cannot find any model with id {id}")
+        jwt_require_claim(model.project_id, 'admin')
         db.session.delete(model)
         db.session.commit()
         return model
