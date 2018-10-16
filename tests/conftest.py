@@ -16,6 +16,7 @@
 """Provide session level fixtures."""
 
 import pytest
+from jose import jwt
 
 from model_storage.app import api
 from model_storage.app import app as app_
@@ -49,10 +50,46 @@ def db(app):
 
 
 @pytest.fixture(scope='function')
-def model(db):
+def models(db):
     """Return a fixture with test data for the Model data model."""
-    fixture = Model(name="iJO1366", organism_id="4",
-                    project_id=4, default_biomass_reaction="BIOMASS",
-                    model_serialized={"Reactions": [{"GAPDH": "x->y"}]})
-    db.session.add(fixture)
-    return fixture
+    fixture1 = Model(
+        id=1,
+        name="Restricted Model",
+        organism_id="4",
+        project_id=4,
+        default_biomass_reaction="BIOMASS",
+        model_serialized={"Reactions": [{"GAPDH": "x->y"}]},
+    )
+    fixture2 = Model(
+        id=2,
+        name="Public Model",
+        organism_id="5",
+        project_id=None,
+        default_biomass_reaction="BIOMASS",
+        model_serialized={"Reactions": [{"GAPDH": "x->y"}]},
+    )
+    db.session.add(fixture1)
+    db.session.add(fixture2)
+    return fixture1, fixture2
+
+
+@pytest.fixture(scope="session")
+def tokens(app):
+    """Provides read, write and admin JWT claims to project 4"""
+    return {
+        'read': jwt.encode(
+            {'prj': {4: 'read'}},
+            app.config['JWT_PRIVATE_KEY'],
+            'RS512',
+        ),
+        'write': jwt.encode(
+            {'prj': {4: 'write'}},
+            app.config['JWT_PRIVATE_KEY'],
+            'RS512',
+        ),
+        'admin': jwt.encode(
+            {'prj': {4: 'admin'}},
+            app.config['JWT_PRIVATE_KEY'],
+            'RS512',
+        ),
+    }
