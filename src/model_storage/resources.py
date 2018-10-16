@@ -21,7 +21,7 @@ from sqlalchemy.orm import load_only
 from sqlalchemy.orm.exc import NoResultFound
 
 from .app import api, app
-from .jwt import jwt_required, jwt_require_claim
+from .jwt import jwt_require_claim, jwt_required
 from .models import Model, db
 
 

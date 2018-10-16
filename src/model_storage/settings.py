@@ -18,7 +18,6 @@
 import os
 
 import requests
-
 import werkzeug.exceptions
 
 
