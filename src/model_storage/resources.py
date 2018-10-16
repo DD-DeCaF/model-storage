@@ -65,7 +65,7 @@ class Models(Resource):
             Model.organism_id,
             Model.project_id,
         )).filter(
-            Model.project_id.in_([int(id) for id in g.jwt_claims['prj'].keys()])
+            Model.project_id.in_(g.jwt_claims['prj'])
             | Model.project_id.is_(None)
         ).all()
 
@@ -96,7 +96,7 @@ class IndvModel(Resource):
             return Model.query.filter(
                 Model.id == id
             ).filter(
-                Model.project_id.in_([int(id) for id in g.jwt_claims['prj'].keys()])
+                Model.project_id.in_(g.jwt_claims['prj'])
                 | Model.project_id.is_(None)
             ).one()
         except NoResultFound:

@@ -45,6 +45,8 @@ def init_app(app):
         try:
             _, token = auth.split(' ', 1)
             g.jwt_claims = jwt.decode(token, app.config['JWT_PUBLIC_KEY'], 'RS512')
+            # JSON object names can only be strings. Map project ids to ints for easier handling
+            g.jwt_claims['prj'] = {int(key): value for key, value in g.jwt_claims['prj'].items()}
             g.jwt_valid = True
             logger.debug(f"JWT claims accepted: {g.jwt_claims}")
         except (jwt.JWTError, jwt.ExpiredSignatureError, jwt.JWTClaimsError) as e:
@@ -90,7 +92,7 @@ def jwt_require_claim(project_id, required_level):
 
     try:
         authorized = False
-        claim_level = g.jwt_claims['prj'][str(project_id)]
+        claim_level = g.jwt_claims['prj'][project_id]
     except KeyError:
         # The given project id is not included in the users claims
         abort(403, "You do not have access to the requested resource")
