@@ -18,8 +18,10 @@
 from model_storage.models import Model
 
 
-def test_commit(db, model):
+def test_commit(db, models):
     """Test actually committing the models from the model fixture."""
     db.session.commit()
-    ecoli_model = db.session.query(Model).filter(Model.name == "iJO1366").one()
-    assert ecoli_model.name == "iJO1366"
+    ecoli_model = db.session.query(Model).filter(
+        Model.name == "Public Model"
+    ).one()
+    assert ecoli_model.name == "Public Model"

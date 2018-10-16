@@ -16,7 +16,7 @@
 """Test expected functioning of the OpenAPI docs endpoints."""
 
 
-def test_models_get(client, db, model):
+def test_models_get(client, db, models):
     """Test the /models GET API supposed to return all models in the DB."""
     db.session.commit()
     resp = client.get("/models")
@@ -24,28 +24,32 @@ def test_models_get(client, db, model):
     assert len(resp.json) == 1
 
 
-def test_models_post(client, db):
+def test_models_post(client, db, tokens):
     """Test the /models POST API supposed to post a single model to the DB."""
     new_model = {
         "name": "iML12311",
         "model_serialized": {"Something Here": "And Here"},
         "organism_id": "This is a String! 0123456789",
-        "project_id": 5,
+        "project_id": 4,
         "default_biomass_reaction": "BIOMASS"
     }
 
-    resp = client.post("/models", json=new_model)
+    resp = client.post("/models", json=new_model, headers={
+        'Authorization': f"Bearer {tokens['write']}",
+    })
     assert resp.status_code == 200
 
 
-def test_indvmodel_get(client, db, model):
+def test_indvmodel_get(client, db, models, tokens):
     """Test the /models/<id> GET API supposed to get a single model by ID."""
     db.session.commit()
-    resp = client.get("/models/1")
+    resp = client.get("/models/1", headers={
+        'Authorization': f"Bearer {tokens['read']}",
+    })
     assert resp.status_code == 200
 
 
-def test_indvmodel_put(client, db, model):
+def test_indvmodel_put(client, db, models, tokens):
     """Test the /models/<id> PUT API supposed to modify a single model by ID."""
     db.session.commit()
     updated_model = {
@@ -56,18 +60,22 @@ def test_indvmodel_put(client, db, model):
         "project_id": 1,
         "default_biomass_reaction": "BIOMASS_RXN_ecoli"
     }
-    resp = client.put("/models/1", json=updated_model)
+    resp = client.put("/models/1", json=updated_model, headers={
+        'Authorization': f"Bearer {tokens['write']}",
+    })
     assert resp.status_code == 200
 
 
-def test_indvmodel_delete(client, db, model):
+def test_indvmodel_delete(client, db, models, tokens):
     """Test the /models/<id> PUT API supposed to remove a single model by ID."""
     db.session.commit()
-    resp = client.delete("/models/1")
+    resp = client.delete("/models/1", headers={
+        'Authorization': f"Bearer {tokens['admin']}",
+    })
     assert resp.status_code == 200
 
 
-def test_indvmodel_not_found(client, db):
+def test_indvmodel_not_found(client, db, tokens):
     """
     Test requests for non-existing models.
 
@@ -77,8 +85,12 @@ def test_indvmodel_not_found(client, db):
     resp = client.get("/models/1")
     assert resp.status_code == 404
 
-    resp = client.put("/models/1")
+    resp = client.put("/models/1", headers={
+        'Authorization': f"Bearer {tokens['write']}",
+    })
     assert resp.status_code == 404
 
-    resp = client.delete("/models/1")
+    resp = client.delete("/models/1", headers={
+        'Authorization': f"Bearer {tokens['write']}",
+    })
     assert resp.status_code == 404
