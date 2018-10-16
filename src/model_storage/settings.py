@@ -92,7 +92,8 @@ class Default:
             '{POSTGRES_PORT}/{POSTGRES_DB_NAME}'.format(**os.environ)
         )
         self.SQLALCHEMY_TRACK_MODIFICATIONS = False
-        self.JWT_PUBLIC_KEY = requests.get(f"{os.environ['IAM_API']}/keys").json()["keys"][0]
+        self.JWT_PUBLIC_KEY = requests.get(
+            f"{os.environ['IAM_API']}/keys").json()["keys"][0]
 
 
 class Development(Default):

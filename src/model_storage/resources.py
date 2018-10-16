@@ -65,8 +65,8 @@ class Models(Resource):
             Model.organism_id,
             Model.project_id,
         )).filter(
-            Model.project_id.in_(g.jwt_claims['prj'])
-            | Model.project_id.is_(None)
+            Model.project_id.in_(g.jwt_claims['prj']) |
+            Model.project_id.is_(None)
         ).all()
 
     @api.expect(model)
@@ -96,8 +96,8 @@ class IndvModel(Resource):
             return Model.query.filter(
                 Model.id == id
             ).filter(
-                Model.project_id.in_(g.jwt_claims['prj'])
-                | Model.project_id.is_(None)
+                Model.project_id.in_(g.jwt_claims['prj']) |
+                Model.project_id.is_(None)
             ).one()
         except NoResultFound:
             abort(404, f"Cannot find any model with id {id}")

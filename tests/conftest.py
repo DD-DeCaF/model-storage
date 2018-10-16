@@ -75,7 +75,7 @@ def models(db):
 
 @pytest.fixture(scope="session")
 def tokens(app):
-    """Provides read, write and admin JWT claims to project 4"""
+    """Provide read, write and admin JWT claims to project 4."""
     return {
         'read': jwt.encode(
             {'prj': {4: 'read'}},
