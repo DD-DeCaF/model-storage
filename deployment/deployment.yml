@@ -116,6 +116,8 @@ spec:
             secretKeyRef:
               name: model-storage-staging
               key: SENTRY_DSN
+        - name: IAM_API
+          value: "http://iam-staging/iam"
         command: ["gunicorn", "-c", "gunicorn.py", "model_storage.wsgi:app"]
         resources:
           requests:
