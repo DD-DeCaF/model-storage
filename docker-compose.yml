@@ -4,30 +4,30 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: gcr.io/dd-decaf-cfbf6/model-warehouse:${IMAGE_TAG:-latest}
+    image: gcr.io/dd-decaf-cfbf6/model-storage:${IMAGE_TAG:-latest}
     depends_on:
       - postgres
     networks:
       default:
       DD-DeCaF:
         aliases:
-          - model_warehouse
+          - model_storage
     ports:
       - "${API_PORT:-8000}:8000"
     volumes:
       - ".:/app"
     environment:
       - ENVIRONMENT=${ENVIRONMENT:-development}
-      - FLASK_APP=src/model_warehouse/wsgi.py
+      - FLASK_APP=src/model_storage/wsgi.py
       - SCRIPT_NAME=${SCRIPT_NAME}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:4200}
       - SENTRY_DSN=${SENTRY_DSN}
       - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
       - POSTGRES_PORT=${POSTGRES_PORT:-5432}
-      - POSTGRES_DB_NAME=${POSTGRES_DB_NAME:-model_warehouse}
+      - POSTGRES_DB_NAME=${POSTGRES_DB_NAME:-model_storage}
       - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
       - POSTGRES_PASS=${POSTGRES_PASS}
-    command: gunicorn -c gunicorn.py model_warehouse.wsgi:app
+    command: gunicorn -c gunicorn.py model_storage.wsgi:app
 
   postgres:
     image: postgres:9.6-alpine

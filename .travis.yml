@@ -9,7 +9,7 @@ services:
 
 env:
   global:
-    - IMAGE_REPO=gcr.io/dd-decaf-cfbf6/model-warehouse
+    - IMAGE_REPO=gcr.io/dd-decaf-cfbf6/model-storage
     - IMAGE_TAG=${TRAVIS_BRANCH}
 
 before_install:

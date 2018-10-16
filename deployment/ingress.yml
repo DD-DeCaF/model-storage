@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: model-warehouse
+  name: model-storage
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/proxy-body-size: 100m
@@ -15,14 +15,14 @@ spec:
   - host: api.dd-decaf.eu
     http:
       paths:
-      - path: /mwarehouse
+      - path: /model-storage
         backend:
-          serviceName: model-warehouse-production
+          serviceName: model-storage-production
           servicePort: 80
   - host: api-staging.dd-decaf.eu
     http:
       paths:
-      - path: /mwarehouse
+      - path: /model-storage
         backend:
-          serviceName: model-warehouse-staging
+          serviceName: model-storage-staging
           servicePort: 80

@@ -107,7 +107,7 @@ class Testing(Default):
         super().__init__()
         self.TESTING = True
         self.SQLALCHEMY_DATABASE_URI = (
-            'postgres://postgres:@postgres:5432/model_warehouse_test'
+            'postgres://postgres:@postgres:5432/model_storage_test'
         )
 
 

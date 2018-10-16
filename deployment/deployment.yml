@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model-warehouse-production
+  name: model-storage-production
 spec:
   selector:
     matchLabels:
-      app: model-warehouse
+      app: model-storage
       env: production
   replicas: 1
   template:
     metadata:
       labels:
-        app: model-warehouse
+        app: model-storage
         env: production
     spec:
       containers:
       - name: web
-        image: gcr.io/dd-decaf-cfbf6/model-warehouse:master
+        image: gcr.io/dd-decaf-cfbf6/model-storage:master
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
@@ -24,17 +24,17 @@ spec:
         - name: ENVIRONMENT
           value: production
         - name: SCRIPT_NAME
-          value: /mwarehouse
+          value: /mstorage
         - name: FLASK_APP
-          value: src/model_warehouse/wsgi.py
+          value: src/model_storage/wsgi.py
         - name: ALLOWED_ORIGINS
           value: https://app.dd-decaf.eu,http://localhost:4200
         - name: SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: model-warehouse-production
+              name: model-storage-production
               key: SENTRY_DSN
-        command: ["gunicorn", "-c", "gunicorn.py", "model_warehouse.wsgi:app"]
+        command: ["gunicorn", "-c", "gunicorn.py", "model_storage.wsgi:app"]
         resources:
           requests:
             cpu: "10m"
@@ -62,22 +62,22 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: model-warehouse-staging
+  name: model-storage-staging
 spec:
   selector:
     matchLabels:
-      app: model-warehouse
+      app: model-storage
       env: staging
   replicas: 1
   template:
     metadata:
       labels:
-        app: model-warehouse
+        app: model-storage
         env: staging
     spec:
       containers:
       - name: web
-        image: gcr.io/dd-decaf-cfbf6/model-warehouse:devel
+        image: gcr.io/dd-decaf-cfbf6/model-storage:devel
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
@@ -87,12 +87,12 @@ spec:
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: model-warehouse-staging
+              name: model-storage-staging
               key: SECRET_KEY
         - name: SCRIPT_NAME
-          value: /mwarehouse
+          value: /mstorage
         - name: FLASK_APP
-          value: src/model_warehouse/wsgi.py
+          value: src/model_storage/wsgi.py
         - name: ALLOWED_ORIGINS
           value: https://caffeine.dd-decaf.eu,http://localhost:4200
         - name: POSTGRES_HOST
@@ -100,23 +100,23 @@ spec:
         - name: POSTGRES_PORT
           value: "5432"
         - name: POSTGRES_DB_NAME
-          value: model_warehouse_staging
+          value: model_storage_staging
         - name: POSTGRES_USERNAME
           valueFrom:
             secretKeyRef:
-              name: model-warehouse-staging
+              name: model-storage-staging
               key: POSTGRES_USERNAME
         - name: POSTGRES_PASS
           valueFrom:
             secretKeyRef:
-              name: model-warehouse-staging
+              name: model-storage-staging
               key: POSTGRES_PASS
         - name: SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: model-warehouse-staging
+              name: model-storage-staging
               key: SENTRY_DSN
-        command: ["gunicorn", "-c", "gunicorn.py", "model_warehouse.wsgi:app"]
+        command: ["gunicorn", "-c", "gunicorn.py", "model_storage.wsgi:app"]
         resources:
           requests:
             cpu: "5m"

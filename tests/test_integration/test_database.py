@@ -15,7 +15,7 @@
 
 """Test expected functioning of the OpenAPI docs endpoints."""
 
-from model_warehouse.models import Model
+from model_storage.models import Model
 
 
 def test_commit(db, model):

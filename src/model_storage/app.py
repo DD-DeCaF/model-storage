@@ -33,7 +33,7 @@ from .settings import current_config
 app = Flask(__name__)
 app.config.from_object(current_config())
 api = Api(
-    title="model-warehouse",
+    title="model-storage",
     version="0.1.0",
     description="The storage for metabolic models used by the platform",
 )
@@ -55,7 +55,7 @@ def init_app(application, interface, db):
         sentry.init_app(application)
 
     # Add routes and resources.
-    from model_warehouse import resources  # noqa
+    from model_storage import resources  # noqa
     interface.init_app(application)
 
     # Add CORS information for all resources.

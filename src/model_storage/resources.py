@@ -69,7 +69,7 @@ class Models(Resource):
     @api.marshal_with(model_full)
     def post(self):
         """Create a new model."""
-        app.logger.debug("Creating a new model in the model warehouse")
+        app.logger.debug("Creating a new model in the model storage")
         new_model = Model(**api.payload)
         db.session.add(new_model)
         db.session.commit()

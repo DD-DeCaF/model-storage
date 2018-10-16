@@ -31,21 +31,21 @@ style: flake8 isort license
 ## Run flake8.
 flake8:
 	docker-compose run --rm web \
-		flake8 src/model_warehouse tests
+		flake8 src/model_storage tests
 
 ## Check Python package import order.
 isort:
 	docker-compose run --rm web \
-		isort --check-only --recursive src/model_warehouse tests
+		isort --check-only --recursive src/model_storage tests
 
 ## Sort imports and write changes to files.
 isort-save:
 	docker-compose run --rm web \
-		isort --recursive src/model_warehouse tests
+		isort --recursive src/model_storage tests
 
 ## Verify source code license headers.
 license:
-	./scripts/verify_license_headers.sh src/model_warehouse tests
+	./scripts/verify_license_headers.sh src/model_storage tests
 
 ## Check for known vulnerabilities in python dependencies.
 safety:
@@ -54,7 +54,7 @@ safety:
 ## Run the tests.
 test:
 	docker-compose run --rm -e ENVIRONMENT=testing web pytest \
-		--cov=src/model_warehouse
+		--cov=src/model_storage
 
 ## Run the tests and report coverage (see https://docs.codecov.io/docs/testing-with-docker).
 shared := /tmp/coverage
@@ -62,7 +62,7 @@ test-travis:
 	mkdir --parents "$(shared)"
 	docker-compose run --rm -e ENVIRONMENT=testing -v "$(shared):$(shared)" \
 		web pytest --cov-report "xml:$(shared)/coverage.xml" --cov-report term \
-		--cov=src/model_warehouse
+		--cov=src/model_storage
 	bash <(curl -s https://codecov.io/bash) -f "$(shared)/coverage.xml"
 
 ## Stop all services.
@@ -81,8 +81,8 @@ logs:
 databases:
 	docker-compose up -d postgres
 	./scripts/wait_for_postgres.sh
-	docker-compose exec postgres psql -U postgres -c "create database model_warehouse;"
-	docker-compose exec postgres psql -U postgres -c "create database model_warehouse_test;"
+	docker-compose exec postgres psql -U postgres -c "create database model_storage;"
+	docker-compose exec postgres psql -U postgres -c "create database model_storage_test;"
 	docker-compose run --rm web flask db upgrade
 	docker-compose stop
 

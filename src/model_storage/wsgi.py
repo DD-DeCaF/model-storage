@@ -15,7 +15,7 @@
 
 """Prepare the application for use by the WSGI server (gunicorn)."""
 
-from model_warehouse.app import api, app, init_app
+from model_storage.app import api, app, init_app
 
 from .models import db
 
