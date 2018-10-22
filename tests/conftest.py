@@ -34,42 +34,34 @@ def app():
 
 @pytest.fixture(scope="session")
 def client(app):
-    """Provide a Flask test client to be used by almost all test cases."""
+    """Provide a Flask test client for integration tests."""
     with app.test_client() as client:
         yield client
 
 
-@pytest.fixture(scope='function')
-def db(app):
-    """Provide a database session with tables created."""
-    db_.create_all()
-    yield db_
+@pytest.fixture(scope="session")
+def reset_tables(app):
+    """Ensure a clean database."""
+    # Clean up anything that might reside in the testing database.
     db_.session.remove()
     db_.drop_all()
+    # Re-create tables.
+    db_.create_all()
 
 
-@pytest.fixture(scope='function')
-def models(db):
-    """Return a fixture with test data for the Model data model."""
-    fixture1 = Model(
-        id=1,
-        name="Restricted Model",
-        organism_id=4,
-        project_id=4,
-        default_biomass_reaction="BIOMASS",
-        model_serialized={"Reactions": [{"GAPDH": "x->y"}]},
-    )
-    fixture2 = Model(
-        id=2,
-        name="Public Model",
-        organism_id=5,
-        project_id=None,
-        default_biomass_reaction="BIOMASS",
-        model_serialized={"Reactions": [{"GAPDH": "x->y"}]},
-    )
-    db.session.add(fixture1)
-    db.session.add(fixture2)
-    return fixture1, fixture2
+@pytest.fixture(scope="session")
+def connection():
+    """
+    Use a connection such that transactions can be used.
+
+    Notes
+    -----
+    Follows a transaction pattern described in the following:
+    http://docs.sqlalchemy.org/en/latest/orm/session_transaction.html#session-begin-nested
+
+    """
+    with db_.engine.connect() as connection:
+        yield connection
 
 
 @pytest.fixture(scope="session")
@@ -92,3 +84,34 @@ def tokens(app):
             'RS512',
         ),
     }
+
+
+@pytest.fixture(scope="function")
+def session(reset_tables, connection):
+    """
+    Create a transaction and session per test unit.
+
+    Rolling back a transaction removes even committed rows
+    (``session.commit``) from the database.
+
+    https://docs.sqlalchemy.org/en/latest/orm/session_transaction.html#joining-a-session-into-an-external-transaction-such-as-for-test-suites
+    """
+    flask_sqlalchemy_session = db_.session
+    transaction = connection.begin()
+    db_.session = db_.create_scoped_session(
+        options={"bind": connection, "binds": {}})
+    yield db_.session
+    db_.session.close()
+    transaction.rollback()
+    db_.session = flask_sqlalchemy_session
+
+
+@pytest.fixture(scope="session")
+def model(reset_tables):
+    """Return a fixture with test data for the Model data model."""
+    fixture = Model(name="iJO1366", organism_id=4,
+                    project_id=4, default_biomass_reaction="BIOMASS",
+                    model_serialized={"Reactions": [{"GAPDH": "x->y"}]})
+    db_.session.add(fixture)
+    db_.session.commit()
+    return fixture

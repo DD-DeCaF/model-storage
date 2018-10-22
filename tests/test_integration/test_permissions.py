@@ -14,24 +14,23 @@
 # limitations under the License.
 
 
-def test_list_no_token(client, db, models):
+def test_list_no_token(client, session, model):
     """Only the public model should be listed without a JWT."""
     response = client.get("/models")
     assert response.status_code == 200
-    assert len(response.json) == 1
-    assert response.json[0]['project_id'] is None
+    assert len(response.json) == 0
 
 
-def test_list_token(client, db, models, tokens):
+def test_list_token(client, session, model, tokens):
     """Both model fixtures should be listed with the JWT claim."""
     response = client.get("/models", headers={
         'Authorization': f"Bearer {tokens['read']}",
     })
     assert response.status_code == 200
-    assert len(response.json) == 2
+    assert len(response.json) == 1
 
 
-def test_post_no_token(client, db, models):
+def test_post_no_token(client, session, model):
     """POST resource should require JWT."""
     response = client.post("/models", json={
         'name': "foo",
@@ -43,7 +42,7 @@ def test_post_no_token(client, db, models):
     assert response.status_code == 401
 
 
-def test_post_token(client, db, models, tokens):
+def test_post_token(client, session, model, tokens):
     """Allowed to create models with project id in JWT claim."""
     test_model = {
         'name': "Private Model",
@@ -65,43 +64,42 @@ def test_post_token(client, db, models, tokens):
     assert response.status_code == 403
 
 
-def test_get_no_token(client, db, models):
+def test_get_no_token(client, session, model):
     """Private model gives impression of not existing without JWT claim."""
     response = client.get("/models/1")
     assert response.status_code == 404
 
 
-def test_get_token(client, db, models, tokens):
+def test_get_token(client, session, model, tokens):
     """Private model can be retrieved with the correct JWT claim."""
     response = client.get("/models/1", headers={
         'Authorization': f"Bearer {tokens['read']}",
     })
     assert response.status_code == 200
-    assert response.json['name'] == "Restricted Model"
+    assert response.json['name'] == "iJO1366"
 
 
-def test_put_no_token(client, db, models):
+def test_put_no_token(client, session, model):
     """PUT resource should require JWT."""
     response = client.put("/models/1", json={'name': "Changed"})
     assert response.status_code == 401
 
 
-def test_put_token(client, db, models, tokens):
+def test_put_token(client, session, model, tokens):
     """PUT is allowed with the correct JWT claim."""
-    db.session.commit()
     response = client.put("/models/1", json={'name': "Changed"}, headers={
         'Authorization': f"Bearer {tokens['write']}",
     })
     assert response.status_code == 204
 
 
-def test_delete_no_token(client, db, models):
+def test_delete_no_token(client, session, model):
     """DELETE resource should require JWT."""
     response = client.delete("/models/1")
     assert response.status_code == 401
 
 
-def test_delete_token(client, db, models, tokens):
+def test_delete_token(client, session, model, tokens):
     """DELETE is allowed with the correct JWT claim."""
     response = client.delete("/models/1", headers={
         'Authorization': f"Bearer {tokens['admin']}",
