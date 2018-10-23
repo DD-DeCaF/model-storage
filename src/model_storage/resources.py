@@ -17,7 +17,7 @@
 
 import logging
 
-from flask import abort, g
+from flask import abort, g, make_response, jsonify
 from flask_apispec import FlaskApiSpec, MethodResource, marshal_with, use_kwargs
 from sqlalchemy.orm import load_only
 from sqlalchemy.orm.exc import NoResultFound
@@ -61,7 +61,6 @@ class Models(MethodResource):
         ).all()
 
     @use_kwargs(ModelSchema(exclude=('id',)))
-    @marshal_with(ModelSchema)
     @jwt_required
     def post(self, **payload):
         """Create a new model."""
@@ -71,7 +70,12 @@ class Models(MethodResource):
         new_model = Model(**payload)
         db.session.add(new_model)
         db.session.commit()
-        return new_model
+        # Return the created model resource identifier for convenience.
+        resp = make_response(jsonify(
+            ModelSchema(only=('id',)).dump(new_model).data), 201)
+        # Return the relative URL to the new resource in the Location header.
+        resp.headers["Location"] = f"/models/{new_model.id}"
+        return resp
 
 
 class IndvModel(MethodResource):
@@ -106,7 +110,7 @@ class IndvModel(MethodResource):
         for key, value in payload.items():
             setattr(model, key, value)
         db.session.commit()
-        return model
+        return "", 204
 
     @marshal_with(ModelSchema, code=200)
     @marshal_with(None, code=404)
@@ -121,4 +125,4 @@ class IndvModel(MethodResource):
         jwt_require_claim(model.project_id, 'admin')
         db.session.delete(model)
         db.session.commit()
-        return model
+        return "", 204

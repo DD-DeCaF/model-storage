@@ -35,7 +35,7 @@ def test_post_no_token(client, db, models):
     """POST resource should require JWT."""
     response = client.post("/models", json={
         'name': "foo",
-        'organism_id': "foo",
+        'organism_id': 1,
         'project_id': 1,
         'model_serialized': {},
         'default_biomass_reaction': "foo",
@@ -47,7 +47,7 @@ def test_post_token(client, db, models, tokens):
     """Allowed to create models with project id in JWT claim."""
     test_model = {
         'name': "Private Model",
-        'organism_id': "foo",
+        'organism_id': 1,
         'project_id': 4,
         'default_biomass_reaction': "BIOMASS",
         'model_serialized': {"Reactions": [{"GAPDH": "x->y"}]},
@@ -55,7 +55,7 @@ def test_post_token(client, db, models, tokens):
     response = client.post("/models", json=test_model, headers={
         'Authorization': f"Bearer {tokens['write']}",
     })
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     # Repeating the POST with a project id *not* in claims should be rejected
     test_model['project_id'] = 5
@@ -92,8 +92,7 @@ def test_put_token(client, db, models, tokens):
     response = client.put("/models/1", json={'name': "Changed"}, headers={
         'Authorization': f"Bearer {tokens['write']}",
     })
-    assert response.status_code == 200
-    assert response.json['name'] == "Changed"
+    assert response.status_code == 204
 
 
 def test_delete_no_token(client, db, models):
@@ -107,7 +106,7 @@ def test_delete_token(client, db, models, tokens):
     response = client.delete("/models/1", headers={
         'Authorization': f"Bearer {tokens['admin']}",
     })
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # Verify that the model was deleted
     response = client.get("/models/1", headers={

@@ -37,7 +37,8 @@ def test_models_post(client, db, tokens):
     resp = client.post("/models", json=new_model, headers={
         'Authorization': f"Bearer {tokens['write']}",
     })
-    assert resp.status_code == 200
+    assert resp.status_code == 201
+    assert resp.headers["Location"].endswith(f"/models/{resp.json['id']}")
 
 
 def test_indvmodel_get(client, db, models, tokens):
@@ -63,7 +64,7 @@ def test_indvmodel_put(client, db, models, tokens):
     resp = client.put("/models/1", json=updated_model, headers={
         'Authorization': f"Bearer {tokens['write']}",
     })
-    assert resp.status_code == 200
+    assert resp.status_code == 204
 
 
 def test_indvmodel_delete(client, db, models, tokens):
@@ -72,7 +73,7 @@ def test_indvmodel_delete(client, db, models, tokens):
     resp = client.delete("/models/1", headers={
         'Authorization': f"Bearer {tokens['admin']}",
     })
-    assert resp.status_code == 200
+    assert resp.status_code == 204
 
 
 def test_indvmodel_not_found(client, db, tokens):
