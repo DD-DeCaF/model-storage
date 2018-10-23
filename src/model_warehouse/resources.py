@@ -15,7 +15,7 @@
 
 """Implement RESTful API endpoints using resources."""
 
-from flask import abort, make_response, jsonify
+from flask import abort, jsonify, make_response
 from flask_restplus import Resource, fields, marshal
 from sqlalchemy.orm import load_only
 from sqlalchemy.orm.exc import NoResultFound
