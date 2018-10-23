@@ -29,7 +29,7 @@ def test_models_post(client, db, tokens):
     new_model = {
         "name": "iML12311",
         "model_serialized": {"Something Here": "And Here"},
-        "organism_id": "This is a String! 0123456789",
+        "organism_id": 1,
         "project_id": 4,
         "default_biomass_reaction": "BIOMASS"
     }
@@ -56,7 +56,7 @@ def test_indvmodel_put(client, db, models, tokens):
         "name": "iJO1366",
         "model_serialized": {"Reactions": [{"GAPDH": "x->y"},
                                            {"PMMO": "a->z"}]},
-        "organism_id": "EColi",
+        "organism_id": 1,
         "project_id": 1,
         "default_biomass_reaction": "BIOMASS_RXN_ecoli"
     }

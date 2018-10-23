@@ -54,7 +54,7 @@ def models(db):
     fixture1 = Model(
         id=1,
         name="Restricted Model",
-        organism_id="4",
+        organism_id=4,
         project_id=4,
         default_biomass_reaction="BIOMASS",
         model_serialized={"Reactions": [{"GAPDH": "x->y"}]},
@@ -62,7 +62,7 @@ def models(db):
     fixture2 = Model(
         id=2,
         name="Public Model",
-        organism_id="5",
+        organism_id=5,
         project_id=None,
         default_biomass_reaction="BIOMASS",
         model_serialized={"Reactions": [{"GAPDH": "x->y"}]},
