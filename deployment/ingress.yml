@@ -15,14 +15,14 @@ spec:
   - host: api.dd-decaf.eu
     http:
       paths:
-      - path: /model-storage
+      - path: /mstorage
         backend:
           serviceName: model-storage-production
           servicePort: 80
   - host: api-staging.dd-decaf.eu
     http:
       paths:
-      - path: /model-storage
+      - path: /mstorage
         backend:
           serviceName: model-storage-staging
           servicePort: 80
