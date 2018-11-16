@@ -49,7 +49,7 @@ class Default:
         """
         self.DEBUG = True
         self.SECRET_KEY = os.urandom(24)
-        self.APISPEC_TITLE = "Memote Webservice"
+        self.APISPEC_TITLE = "Model Storage"
         self.APISPEC_SWAGGER_UI_URL = "/"
         self.CORS_ORIGINS = os.environ['ALLOWED_ORIGINS'].split(',')
         self.SENTRY_DSN = os.environ.get('SENTRY_DSN')
