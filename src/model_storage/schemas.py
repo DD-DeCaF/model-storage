@@ -13,11 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Prepare the application for use by the WSGI server (gunicorn)."""
-
-from model_storage.app import app, init_app
-
-from .models import db
+from marshmallow import Schema, fields
 
 
-init_app(app, db)
+class Model(Schema):
+    id = fields.Integer(required=True)
+    name = fields.String(required=True)
+    organism_id = fields.String(required=True)
+    project_id = fields.Integer(required=True)
+    model_serialized = fields.Raw(
+        description="A metabolic model serialized to JSON by cobrapy",
+        required=True,
+    )
+    default_biomass_reaction = fields.String(required=True)
+
+    class Meta:
+        strict = True

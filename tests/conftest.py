@@ -18,7 +18,6 @@
 import pytest
 from jose import jwt
 
-from model_storage.app import api
 from model_storage.app import app as app_
 from model_storage.app import init_app
 from model_storage.models import Model
@@ -28,7 +27,7 @@ from model_storage.models import db as db_
 @pytest.fixture(scope="session")
 def app():
     """Provide an initialized Flask for use in certain test cases."""
-    init_app(app_, api, db_)
+    init_app(app_, db_)
     with app_.app_context():
         yield app_
 

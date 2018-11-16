@@ -13,34 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Expose the main Flask-RESTPlus application."""
+"""Expose the main Flask application."""
 
 import json
 import logging
 import logging.config
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_restplus import Api
 from raven.contrib.flask import Sentry
 from werkzeug.contrib.fixers import ProxyFix
+from werkzeug.exceptions import HTTPException
 
-from . import jwt
+from . import jwt, resources
 from .models import Model
 from .settings import current_config
 
 
 app = Flask(__name__)
 app.config.from_object(current_config())
-api = Api(
-    title="model-storage",
-    version="0.1.0",
-    description="The storage for metabolic models used by the platform",
-)
 
 
-def init_app(application, interface, db):
+def init_app(application, db):
     """Initialize the main app with config information and routes."""
     application.config.from_object(current_config())
 
@@ -56,14 +51,29 @@ def init_app(application, interface, db):
         sentry.init_app(application)
 
     # Add routes and resources.
-    from model_storage import resources  # noqa
-    interface.init_app(application)
+    resources.init_app(application)
 
     # Add CORS information for all resources.
     CORS(application)
 
     # Add JWT middleware
     jwt.init_app(application)
+
+    # Add an error handler for webargs parser error, ensuring a JSON response
+    # including all error messages produced from the parser.
+    @application.errorhandler(422)
+    def handle_webargs_error(error):
+        response = jsonify(error.data['messages'])
+        response.status_code = error.code
+        return response
+
+    # Handle werkzeug HTTPExceptions (typically raised through `flask.abort`) by
+    # returning a JSON response including the error description.
+    @application.errorhandler(HTTPException)
+    def handle_error(error):
+        response = jsonify({'message': error.description})
+        response.status_code = error.code
+        return response
 
     # Please keep in mind that it is a security issue to use such a middleware
     # in a non-proxy setup because it will blindly trust the incoming headers

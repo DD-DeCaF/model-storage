@@ -15,50 +15,42 @@
 
 """Implement RESTful API endpoints using resources."""
 
+import logging
+
 from flask import abort, g
-from flask_restplus import Resource, fields
+from flask_apispec import (
+    FlaskApiSpec, MethodResource, doc, marshal_with, use_kwargs)
 from sqlalchemy.orm import load_only
 from sqlalchemy.orm.exc import NoResultFound
 
-from .app import api, app
 from .jwt import jwt_require_claim, jwt_required
 from .models import Model, db
+from .schemas import Model as ModelSchema
 
 
-model_header = api.model('ModelHeader', {
-    'id': fields.Integer,
-    'name': fields.String,
-    'organism_id': fields.String,
-    'project_id': fields.Integer,
-})
+logger = logging.getLogger(__name__)
 
 
-model = api.inherit('Model', model_header, {
-    'model_serialized': fields.Raw(
-        title='Metabolic Model JSON',
-        description='A metabolic model serialized to JSON by cobrapy',
-        required=True, readonly=False
-    ),
-    'organism_id': fields.String,
-    'project_id': fields.Integer,
-    'default_biomass_reaction': fields.String,
-})
+def init_app(app):
+    """Register API resources on the provided Flask application."""
+    def register(path, resource):
+        app.add_url_rule(path, view_func=resource.as_view(resource.__name__))
+        docs.register(resource, endpoint=resource.__name__)
+
+    docs = FlaskApiSpec(app)
+    register("/models", Models)
+    register("/models/<int:id>", IndvModel)
 
 
-model_full = api.inherit('ModelFull', model, {
-    'created': fields.DateTime,
-    'updated': fields.DateTime,
-})
-
-
-@api.route("/models")
-class Models(Resource):
+class Models(MethodResource):
     """Serve all available models or create new entries."""
 
-    @api.marshal_with(model_header)
+    @marshal_with(ModelSchema(many=True, exclude=(
+        'model_serialized',
+        'default_biomass_reaction')))
     def get(self):
         """List all available models."""
-        app.logger.debug("Retrieving all models")
+        logger.debug("Retrieving all models")
         return Model.query.options(load_only(
             Model.id,
             Model.name,
@@ -69,29 +61,28 @@ class Models(Resource):
             Model.project_id.is_(None)
         ).all()
 
-    @api.expect(model)
-    @api.marshal_with(model_full)
+    @use_kwargs(ModelSchema(exclude=('id',)))
+    @marshal_with(ModelSchema)
     @jwt_required
-    def post(self):
+    def post(self, **payload):
         """Create a new model."""
-        app.logger.debug("Creating a new model in the model storage")
-        if 'project_id' in api.payload:
-            jwt_require_claim(api.payload['project_id'], 'write')
-        new_model = Model(**api.payload)
+        logger.debug("Creating a new model in the model storage")
+        if 'project_id' in payload:
+            jwt_require_claim(payload['project_id'], 'write')
+        new_model = Model(**payload)
         db.session.add(new_model)
         db.session.commit()
         return new_model
 
 
-@api.response(404, 'Not found')
-@api.route("/models/<int:id>",)
-class IndvModel(Resource):
+class IndvModel(MethodResource):
     """Retrieve, update or delete a single model."""
 
-    @api.marshal_with(model_full)
+    @marshal_with(ModelSchema, code=200)
+    @marshal_with(None, code=404)
     def get(self, id):
         """Return a model by ID."""
-        app.logger.debug("Fetching model by ID {}".format(id))
+        logger.debug("Fetching model by ID {}".format(id))
         try:
             return Model.query.filter(
                 Model.id == id
@@ -102,27 +93,28 @@ class IndvModel(Resource):
         except NoResultFound:
             abort(404, f"Cannot find any model with id {id}")
 
-    @api.expect(model)
-    @api.marshal_with(model_full)
+    @use_kwargs(ModelSchema(exclude=('id',), partial=True))
+    @marshal_with(ModelSchema)
     @jwt_required
-    def put(self, id):
+    def put(self, id, **payload):
         """Update a model by ID."""
-        app.logger.debug("Updating model by ID {}".format(id))
+        logger.debug("Updating model by ID {}".format(id))
         try:
             model = Model.query.filter(Model.id == id).one()
         except NoResultFound:
             abort(404, f"Cannot find any model with id {id}")
         jwt_require_claim(model.project_id, 'write')
-        for key, value in api.payload.items():
+        for key, value in payload.items():
             setattr(model, key, value)
         db.session.commit()
         return model
 
-    @api.marshal_with(model_full)
+    @marshal_with(ModelSchema, code=200)
+    @marshal_with(None, code=404)
     @jwt_required
     def delete(self, id):
         """Delete a model by ID."""
-        app.logger.debug("Deleting model by ID {}".format(id))
+        logger.debug("Deleting model by ID {}".format(id))
         try:
             model = Model.query.filter(Model.id == id).one()
         except NoResultFound:
