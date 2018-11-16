@@ -5,6 +5,6 @@ raven[flask]
 Alembic
 Flask-Migrate
 flask-sqlalchemy
-psycopg2-binary
+psycopg2
 sqlalchemy
 python-jose

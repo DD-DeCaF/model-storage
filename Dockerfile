@@ -28,6 +28,7 @@ RUN addgroup -S -g "${GID}" "${APP_USER}" && \
 
 WORKDIR "${CWD}"
 
+# postgresql-dev and g++ are required to build psycopg2
 RUN apk add --update --no-cache postgresql-dev g++
 
 COPY requirements.in dev-requirements.in ./
