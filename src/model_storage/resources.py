@@ -18,8 +18,7 @@
 import logging
 
 from flask import abort, g
-from flask_apispec import (
-    FlaskApiSpec, MethodResource, doc, marshal_with, use_kwargs)
+from flask_apispec import FlaskApiSpec, MethodResource, marshal_with, use_kwargs
 from sqlalchemy.orm import load_only
 from sqlalchemy.orm.exc import NoResultFound
 
