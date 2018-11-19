@@ -33,7 +33,13 @@ def test_list_token(client, db, models, tokens):
 
 def test_post_no_token(client, db, models):
     """POST resource should require JWT."""
-    response = client.post("/models", json={})
+    response = client.post("/models", json={
+        'name': "foo",
+        'organism_id': "foo",
+        'project_id': 1,
+        'model_serialized': {},
+        'default_biomass_reaction': "foo",
+    })
     assert response.status_code == 401
 
 
