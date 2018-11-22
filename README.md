@@ -3,12 +3,10 @@
 ![master Branch](https://img.shields.io/badge/branch-master-blue.svg)
 [![master Build Status](https://travis-ci.org/DD-DeCaF/model-storage.svg?branch=master)](https://travis-ci.org/DD-DeCaF/model-storage)
 [![master Codecov](https://codecov.io/gh/DD-DeCaF/model-storage/branch/master/graph/badge.svg)](https://codecov.io/gh/DD-DeCaF/model-storage/branch/master)
-[![master Requirements Status](https://requires.io/github/DD-DeCaF/model-storage/requirements.svg?branch=master)](https://requires.io/github/DD-DeCaF/model-storage/requirements/?branch=master)
 
 ![devel Branch](https://img.shields.io/badge/branch-devel-blue.svg)
 [![devel Build Status](https://travis-ci.org/DD-DeCaF/model-storage.svg?branch=devel)](https://travis-ci.org/DD-DeCaF/model-storage)
 [![devel Codecov](https://codecov.io/gh/DD-DeCaF/model-storage/branch/devel/graph/badge.svg)](https://codecov.io/gh/DD-DeCaF/model-storage/branch/devel)
-[![devel Requirements Status](https://requires.io/github/DD-DeCaF/model-storage/requirements.svg?branch=devel)](https://requires.io/github/DD-DeCaF/model-storage/requirements/?branch=devel)
 
 ## Development
 
