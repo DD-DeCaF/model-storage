@@ -32,7 +32,7 @@ model_id = api.model('ModelID', {
 model_header = api.model('ModelHeader', {
     'id': fields.Integer,
     'name': fields.String,
-    'organism_id': fields.String,
+    'organism_id': fields.Integer,
     'project_id': fields.Integer,
 })
 

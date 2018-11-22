@@ -17,7 +17,7 @@
 
 import logging
 
-from flask import abort, g, make_response, jsonify
+from flask import abort, g, jsonify, make_response
 from flask_apispec import FlaskApiSpec, MethodResource, marshal_with, use_kwargs
 from sqlalchemy.orm import load_only
 from sqlalchemy.orm.exc import NoResultFound
