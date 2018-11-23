@@ -38,7 +38,7 @@ class Model(TimestampMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256), nullable=False)
     model_serialized = db.Column(postgresql.JSONB, nullable=False)
-    organism_id = db.Column(db.String(256), nullable=False)
+    organism_id = db.Column(db.Integer, nullable=False)
     project_id = db.Column(db.Integer)
     default_biomass_reaction = db.Column(db.String(256), nullable=False)
 

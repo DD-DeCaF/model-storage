@@ -15,21 +15,24 @@
 
 """Test expected functioning of the OpenAPI docs endpoints."""
 
+import pytest
 
-def test_models_get(client, db, models):
+
+def test_models_get(client, session, model, tokens):
     """Test the /models GET API supposed to return all models in the DB."""
-    db.session.commit()
-    resp = client.get("/models")
+    resp = client.get("/models", headers={
+        'Authorization': f"Bearer {tokens['read']}",
+    })
     assert resp.status_code == 200
     assert len(resp.json) == 1
 
 
-def test_models_post(client, db, tokens):
+def test_models_post(client, session, tokens):
     """Test the /models POST API supposed to post a single model to the DB."""
     new_model = {
         "name": "iML12311",
         "model_serialized": {"Something Here": "And Here"},
-        "organism_id": "This is a String! 0123456789",
+        "organism_id": 1,
         "project_id": 4,
         "default_biomass_reaction": "BIOMASS"
     }
@@ -37,60 +40,49 @@ def test_models_post(client, db, tokens):
     resp = client.post("/models", json=new_model, headers={
         'Authorization': f"Bearer {tokens['write']}",
     })
-    assert resp.status_code == 200
+    assert resp.status_code == 201
+    assert resp.headers["Location"].endswith(f"/models/{resp.json['id']}")
 
 
-def test_indvmodel_get(client, db, models, tokens):
+@pytest.mark.parametrize("url, code", [
+    ("/models/1", 200),
+    ("/models/10", 404),
+])
+def test_indvmodel_get(client, session, model, tokens, url, code):
     """Test the /models/<id> GET API supposed to get a single model by ID."""
-    db.session.commit()
-    resp = client.get("/models/1", headers={
+    resp = client.get(url, headers={
         'Authorization': f"Bearer {tokens['read']}",
     })
-    assert resp.status_code == 200
+    assert resp.status_code == code
 
 
-def test_indvmodel_put(client, db, models, tokens):
+@pytest.mark.parametrize("url, code", [
+    ("/models/1", 204),
+    ("/models/10", 404),
+])
+def test_indvmodel_put(client, session, model, tokens, url, code):
     """Test the /models/<id> PUT API supposed to modify a single model by ID."""
-    db.session.commit()
     updated_model = {
         "name": "iJO1366",
         "model_serialized": {"Reactions": [{"GAPDH": "x->y"},
                                            {"PMMO": "a->z"}]},
-        "organism_id": "EColi",
+        "organism_id": 1,
         "project_id": 1,
         "default_biomass_reaction": "BIOMASS_RXN_ecoli"
     }
-    resp = client.put("/models/1", json=updated_model, headers={
+    resp = client.put(url, json=updated_model, headers={
         'Authorization': f"Bearer {tokens['write']}",
     })
-    assert resp.status_code == 200
+    assert resp.status_code == code
 
 
-def test_indvmodel_delete(client, db, models, tokens):
+@pytest.mark.parametrize("url, code", [
+    ("/models/1", 204),
+    ("/models/10", 404),
+])
+def test_indvmodel_delete(client, session, model, tokens, url, code):
     """Test the /models/<id> PUT API supposed to remove a single model by ID."""
-    db.session.commit()
-    resp = client.delete("/models/1", headers={
+    resp = client.delete(url, headers={
         'Authorization': f"Bearer {tokens['admin']}",
     })
-    assert resp.status_code == 200
-
-
-def test_indvmodel_not_found(client, db, tokens):
-    """
-    Test requests for non-existing models.
-
-    404 should be returned for any GET/PUT/DELETE request to a non-existing
-    model id.
-    """
-    resp = client.get("/models/1")
-    assert resp.status_code == 404
-
-    resp = client.put("/models/1", headers={
-        'Authorization': f"Bearer {tokens['write']}",
-    })
-    assert resp.status_code == 404
-
-    resp = client.delete("/models/1", headers={
-        'Authorization': f"Bearer {tokens['write']}",
-    })
-    assert resp.status_code == 404
+    assert resp.status_code == code

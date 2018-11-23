@@ -4,7 +4,7 @@
     "id": 2,
     "name": "iJO1366",
     "model_serialized": {"this is a model": [{"Trust me it is": "Like yeah totally bro!"}]},
-    "organism_id": "1",
+    "organism_id": 1,
     "project_id": 4,
     "default_biomass_reaction": "BIOMASS"
 },
@@ -12,7 +12,7 @@
     "id": 1,
     "name": "iML1235",
     "model_serialized": {"this is a model too": [{"Yup": "Model here!"}]},
-    "organism_id": "6",
+    "organism_id": 6,
     "project_id": null,
     "default_biomass_reaction": "BIO_GROWTH_2"
 }]

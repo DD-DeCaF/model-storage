@@ -19,7 +19,7 @@ from marshmallow import Schema, fields
 class Model(Schema):
     id = fields.Integer(required=True)
     name = fields.String(required=True)
-    organism_id = fields.String(required=True)
+    organism_id = fields.Integer(required=True)
     project_id = fields.Integer(required=True)
     model_serialized = fields.Raw(
         description="A metabolic model serialized to JSON by cobrapy",
