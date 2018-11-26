@@ -38,6 +38,7 @@ def test_post_no_token(client, session, model):
         'project_id': 1,
         'model_serialized': {},
         'default_biomass_reaction': "foo",
+        "preferred_map_id": 1,
     })
     assert response.status_code == 401
 
@@ -50,6 +51,7 @@ def test_post_token(client, session, model, tokens):
         'project_id': 4,
         'default_biomass_reaction': "BIOMASS",
         'model_serialized': {"Reactions": [{"GAPDH": "x->y"}]},
+        "preferred_map_id": 1,
     }
     response = client.post("/models", json=test_model, headers={
         'Authorization': f"Bearer {tokens['write']}",

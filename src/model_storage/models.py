@@ -41,6 +41,7 @@ class Model(TimestampMixin, db.Model):
     organism_id = db.Column(db.Integer, nullable=False)
     project_id = db.Column(db.Integer)
     default_biomass_reaction = db.Column(db.String(256), nullable=False)
+    preferred_map_id = db.Column(db.Integer, nullable=True)
 
     def __repr__(self):
         """Return a printable representation."""
