@@ -55,6 +55,7 @@ class Models(MethodResource):
             Model.name,
             Model.organism_id,
             Model.project_id,
+            Model.preferred_map_id,
         )).filter(
             Model.project_id.in_(g.jwt_claims['prj']) |
             Model.project_id.is_(None)

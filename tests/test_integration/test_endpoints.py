@@ -31,7 +31,8 @@ def test_models_post(client, db, tokens):
         "model_serialized": {"Something Here": "And Here"},
         "organism_id": "This is a String! 0123456789",
         "project_id": 4,
-        "default_biomass_reaction": "BIOMASS"
+        "default_biomass_reaction": "BIOMASS",
+        "preferred_map_id": 1
     }
 
     resp = client.post("/models", json=new_model, headers={
@@ -58,7 +59,8 @@ def test_indvmodel_put(client, db, models, tokens):
                                            {"PMMO": "a->z"}]},
         "organism_id": "EColi",
         "project_id": 1,
-        "default_biomass_reaction": "BIOMASS_RXN_ecoli"
+        "default_biomass_reaction": "BIOMASS_RXN_ecoli",
+        "preferred_map_id": 1
     }
     resp = client.put("/models/1", json=updated_model, headers={
         'Authorization': f"Bearer {tokens['write']}",
