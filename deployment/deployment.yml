@@ -57,7 +57,8 @@ spec:
               key: SENTRY_DSN
         - name: IAM_API
           value: "http://iam-staging/iam"
-        command: ["gunicorn", "-c", "gunicorn.py", "model_storage.wsgi:app"]
+        command: ["/bin/sh", "-c"]
+        args: ["flask db upgrade && gunicorn -c gunicorn.py model_storage.wsgi:app"]
         resources:
           requests:
             cpu: "100m"
