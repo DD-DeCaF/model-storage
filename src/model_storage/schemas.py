@@ -26,7 +26,7 @@ class Model(Schema):
         required=True,
     )
     default_biomass_reaction = fields.String(required=True)
-    preferred_map_id = fields.Integer(required=True)
+    preferred_map_id = fields.Integer(allow_none=True)
 
     class Meta:
         strict = True
