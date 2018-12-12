@@ -14,7 +14,7 @@
 # limitations under the License.
 
 """
-Exceptions and error handlers
+Exceptions and error handlers.
 
 http://flask.pocoo.org/docs/1.0/errorhandling/
 http://flask.pocoo.org/docs/1.0/patterns/apierrors/
