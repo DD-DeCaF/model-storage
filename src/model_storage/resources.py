@@ -98,7 +98,8 @@ class IndvModel(MethodResource):
             abort(404, f"Cannot find any model with ID {id}.")
 
     @use_kwargs(ModelSchema(exclude=('id',), partial=True))
-    @marshal_with(ModelSchema)
+    @marshal_with(None, code=204)
+    @marshal_with(None, code=404)
     @jwt_required
     def put(self, id, **payload):
         """Update a model by ID."""
