@@ -114,7 +114,7 @@ class IndvModel(MethodResource):
         db.session.commit()
         return make_response("", 204)
 
-    @marshal_with(ModelSchema, code=200)
+    @marshal_with(None, code=204)
     @marshal_with(None, code=404)
     @jwt_required
     def delete(self, id):
@@ -127,4 +127,4 @@ class IndvModel(MethodResource):
         jwt_require_claim(model.project_id, 'admin')
         db.session.delete(model)
         db.session.commit()
-        return "", 204
+        return make_response("", 204)
