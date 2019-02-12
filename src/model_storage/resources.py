@@ -112,7 +112,7 @@ class IndvModel(MethodResource):
         for key, value in payload.items():
             setattr(model, key, value)
         db.session.commit()
-        return "", 204
+        return make_response("", 204)
 
     @marshal_with(ModelSchema, code=200)
     @marshal_with(None, code=404)
