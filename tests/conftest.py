@@ -15,6 +15,8 @@
 
 """Provide session level fixtures."""
 
+import json
+
 import pytest
 from jose import jwt
 
@@ -104,6 +106,13 @@ def session(reset_tables, connection):
     db_.session.close()
     transaction.rollback()
     db_.session = flask_sqlalchemy_session
+
+
+@pytest.fixture(scope="session")
+def e_coli_core():
+    """Provide the e. coli core model as a dict."""
+    with open("tests/data/e_coli_core.json") as file_:
+        return json.load(file_)
 
 
 @pytest.fixture(scope="session")
