@@ -27,14 +27,14 @@ def test_models_get(client, session, model, tokens):
     assert len(resp.json) == 1
 
 
-def test_models_post(client, session, tokens):
+def test_models_post(client, session, tokens, e_coli_core):
     """Test the /models POST API supposed to post a single model to the DB."""
     new_model = {
         "name": "iML12311",
-        "model_serialized": {"Something Here": "And Here"},
+        "model_serialized": e_coli_core,
         "organism_id": 1,
         "project_id": 4,
-        "default_biomass_reaction": "BIOMASS",
+        "default_biomass_reaction": "BIOMASS_Ecoli_core_w_GAM",
         "preferred_map_id": 1
     }
 
@@ -61,15 +61,14 @@ def test_indvmodel_get(client, session, model, tokens, url, code):
     ("/models/1", 204),
     ("/models/10", 404),
 ])
-def test_indvmodel_put(client, session, model, tokens, url, code):
+def test_indvmodel_put(client, session, model, tokens, url, code, e_coli_core):
     """Test the /models/<id> PUT API supposed to modify a single model by ID."""
     updated_model = {
-        "name": "iJO1366",
-        "model_serialized": {"Reactions": [{"GAPDH": "x->y"},
-                                           {"PMMO": "a->z"}]},
+        "name": "e_coli_core",
+        "model_serialized": e_coli_core,
         "organism_id": 1,
         "project_id": 1,
-        "default_biomass_reaction": "BIOMASS_RXN_ecoli",
+        "default_biomass_reaction": "BIOMASS_Ecoli_core_w_GAM",
         "preferred_map_id": 1
     }
     resp = client.put(url, json=updated_model, headers={

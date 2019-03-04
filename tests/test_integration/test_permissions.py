@@ -30,27 +30,27 @@ def test_list_token(client, session, model, tokens):
     assert len(response.json) == 1
 
 
-def test_post_no_token(client, session, model):
+def test_post_no_token(client, session, model, e_coli_core):
     """POST resource should require JWT."""
     response = client.post("/models", json={
         'name': "foo",
         'organism_id': 1,
         'project_id': 1,
-        'model_serialized': {},
-        'default_biomass_reaction': "foo",
+        'model_serialized': e_coli_core,
+        'default_biomass_reaction': "BIOMASS_Ecoli_core_w_GAM",
         "preferred_map_id": 1,
     })
     assert response.status_code == 401
 
 
-def test_post_token(client, session, model, tokens):
+def test_post_token(client, session, model, tokens, e_coli_core):
     """Allowed to create models with project id in JWT claim."""
     test_model = {
         'name': "Private Model",
         'organism_id': 1,
         'project_id': 4,
-        'default_biomass_reaction': "BIOMASS",
-        'model_serialized': {"Reactions": [{"GAPDH": "x->y"}]},
+        'default_biomass_reaction': "BIOMASS_Ecoli_core_w_GAM",
+        'model_serialized': e_coli_core,
         "preferred_map_id": 1,
     }
     response = client.post("/models", json=test_model, headers={
