@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from marshmallow import Schema, fields
+from cobra.io.dict import model_from_dict
+from marshmallow import Schema, ValidationError, fields, validates_schema
 
 
 class Model(Schema):
@@ -27,6 +28,24 @@ class Model(Schema):
     )
     default_biomass_reaction = fields.String(required=True)
     preferred_map_id = fields.Integer(allow_none=True)
+
+    @validates_schema
+    def validate_biomass(self, data):
+        if 'model_serialized' in data:
+            # Validate that the model can be loaded by cobrapy
+            try:
+                model = model_from_dict(data['model_serialized'])
+            except Exception as error:
+                raise ValidationError(str(error))
+
+            # Validate that given biomass reaction exists in the model
+            if 'default_biomass_reaction' in data:
+                if data['default_biomass_reaction'] not in model.reactions:
+                    raise ValidationError(
+                        f"The biomass reaction "
+                        f"'{data['default_biomass_reaction']}' does not exist "
+                        f"in the corresponding model."
+                    )
 
     class Meta:
         strict = True
