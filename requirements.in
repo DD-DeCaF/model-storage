@@ -1,10 +1,22 @@
+# WSGI
+gunicorn
+gevent
+
+# Flask
 Flask
 Flask-Cors
 flask-apispec
-raven[flask]
+
+# Database
 Alembic
 Flask-Migrate
 flask-sqlalchemy
-psycopg2
+psycopg2-binary
 sqlalchemy
+
+# Modeling
+cobra
+
+# Other third party libs
+raven[flask]
 python-jose
