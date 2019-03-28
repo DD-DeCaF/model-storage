@@ -35,7 +35,7 @@ spec:
         - name: ALLOWED_ORIGINS
           value: https://caffeine.dd-decaf.eu,http://localhost:4200
         - name: POSTGRES_HOST
-          value: localhost
+          value: cloudsql-proxy
         - name: POSTGRES_PORT
           value: "5432"
         - name: POSTGRES_DB_NAME
@@ -64,19 +64,3 @@ spec:
             cpu: "10m"
           limits:
             cpu: "2000m"
-      - name: cloudsql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy:1.11
-        command: ["/cloud_sql_proxy", "-instances=dd-decaf-cfbf6:europe-west1:dd-decaf=tcp:5432", "-credential_file=/secrets/cloudsql/credentials.json"]
-        resources:
-          requests:
-            cpu: "10m"
-          limits:
-            cpu: "2000m"
-        volumeMounts:
-          - name: cloudsql-instance-credentials
-            mountPath: /secrets/cloudsql
-            readOnly: true
-      volumes:
-      - name: cloudsql-instance-credentials
-        secret:
-          secretName: cloudsql-instance-credentials
