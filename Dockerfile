@@ -25,7 +25,7 @@ RUN set -eux \
         --output-file dev-requirements.txt dev-requirements.in \
     && pip-compile --generate-hashes \
         --output-file requirements.txt requirements.in \
-    && pip-sync dev-requirements.txt requirements.txt \
+    && pip-sync dev-requirements.txt requirements.txt /opt/requirements.in \
     && rm -rf /root/.cache/pip
 
 COPY . "${CWD}/"
