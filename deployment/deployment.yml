@@ -31,7 +31,7 @@ spec:
         - name: FLASK_APP
           value: src/model_storage/wsgi.py
         - name: ALLOWED_ORIGINS
-          value: https://caffeine.dd-decaf.eu,http://localhost:4200
+          value: https://caffeine.dd-decaf.eu,https://staging.dd-decaf.eu,http://localhost:4200
         - name: POSTGRES_HOST
           value: cloudsql-proxy
         - name: POSTGRES_PORT
@@ -75,7 +75,7 @@ spec:
         - name: FLASK_APP
           value: src/model_storage/wsgi.py
         - name: ALLOWED_ORIGINS
-          value: https://caffeine.dd-decaf.eu,http://localhost:4200
+          value: https://caffeine.dd-decaf.eu,https://staging.dd-decaf.eu,http://localhost:4200
         - name: POSTGRES_HOST
           value: cloudsql-proxy
         - name: POSTGRES_PORT
