@@ -45,8 +45,7 @@ class Models(MethodResource):
     """Serve all available models or create new entries."""
 
     @marshal_with(ModelSchema(many=True, exclude=(
-        'model_serialized',
-        'default_biomass_reaction')))
+        'model_serialized')))
     def get(self):
         """List all available models."""
         logger.debug("Retrieving all models")
@@ -56,6 +55,7 @@ class Models(MethodResource):
             Model.organism_id,
             Model.project_id,
             Model.preferred_map_id,
+            Model.default_biomass_reaction,
         )).filter(
             Model.project_id.in_(g.jwt_claims['prj']) |
             Model.project_id.is_(None)
