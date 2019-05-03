@@ -44,8 +44,7 @@ def init_app(app):
 class Models(MethodResource):
     """Serve all available models or create new entries."""
 
-    @marshal_with(ModelSchema(many=True, exclude=(
-        'model_serialized')))
+    @marshal_with(ModelSchema(many=True, exclude=('model_serialized',)))
     def get(self):
         """List all available models."""
         logger.debug("Retrieving all models")
