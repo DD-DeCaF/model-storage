@@ -42,7 +42,6 @@ def test_models_post(client, session, tokens, e_coli_core):
         'Authorization': f"Bearer {tokens['write']}",
     })
     assert resp.status_code == 201
-    assert resp.headers["Location"].endswith(f"/models/{resp.json['id']}")
 
 
 @pytest.mark.parametrize("url, code", [
