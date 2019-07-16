@@ -1,20 +1,20 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: model-storage
+  name: model-storage-production
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/proxy-body-size: 100m
 spec:
   tls:
   - hosts:
-    - api-staging.dd-decaf.eu
+    - api.dd-decaf.eu
     secretName: decaf-tls
   rules:
-  - host: api-staging.dd-decaf.eu
+  - host: api.dd-decaf.eu
     http:
       paths:
-      - path: /mstorage
+      - path: /model-storage
         backend:
-          serviceName: model-storage-staging
+          serviceName: model-storage-production
           servicePort: 80
