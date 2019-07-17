@@ -20,13 +20,10 @@ WORKDIR "${CWD}"
 
 COPY requirements.in dev-requirements.in ./
 
-RUN set -eux \
-    && pip-compile --generate-hashes \
-        --output-file dev-requirements.txt dev-requirements.in \
-    && pip-compile --generate-hashes \
-        --output-file requirements.txt requirements.in \
-    && pip-sync dev-requirements.txt requirements.txt /opt/requirements.txt \
-    && rm -rf /root/.cache/pip
+# Use pip, not pip-tools, to work around currently failing builds.
+# See https://travis-ci.org/DD-DeCaF/model-storage/builds/559422328
+# and https://travis-ci.org/DD-DeCaF/modeling-base/builds/559346414
+RUN pip install -r dev-requirements.in -r requirements.in
 
 COPY . "${CWD}/"
 
