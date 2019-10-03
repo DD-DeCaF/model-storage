@@ -14,6 +14,11 @@ flask-sqlalchemy
 psycopg2-binary
 sqlalchemy
 
+# Pin apispec and marshmallow. Upgrading to latest version yields the following error:
+# TypeError: validate_biomass() got an unexpected keyword argument 'partial'
+apispec==2.0.2
+marshmallow==2.19.5
+
 # Modeling
 cobra
 
