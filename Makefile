@@ -26,7 +26,11 @@ start:
 qa: style safety test
 
 ## Run all style related targets.
-style: flake8 isort license
+style: black flake8 isort license
+
+## Apply black formatting.
+black:
+	docker-compose run --rm web black src tests
 
 ## Run flake8.
 flake8:

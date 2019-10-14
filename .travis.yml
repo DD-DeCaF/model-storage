@@ -27,6 +27,7 @@ install:
   - make databases
 
 script:
+  - docker-compose run --rm web black --check src tests
   - make flake8
   - make isort
   - make license
