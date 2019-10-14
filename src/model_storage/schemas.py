@@ -23,8 +23,7 @@ class Model(Schema):
     organism_id = fields.Integer(required=True)
     project_id = fields.Integer(required=True)
     model_serialized = fields.Raw(
-        description="A metabolic model serialized to JSON by cobrapy",
-        required=True,
+        description="A metabolic model serialized to JSON by cobrapy", required=True
     )
     default_biomass_reaction = fields.String(required=True)
     preferred_map_id = fields.Integer(allow_none=True)
@@ -32,16 +31,16 @@ class Model(Schema):
 
     @validates_schema
     def validate_biomass(self, data):
-        if 'model_serialized' in data:
+        if "model_serialized" in data:
             # Validate that the model can be loaded by cobrapy
             try:
-                model = model_from_dict(data['model_serialized'])
+                model = model_from_dict(data["model_serialized"])
             except Exception as error:
                 raise ValidationError(str(error))
 
             # Validate that given biomass reaction exists in the model
-            if 'default_biomass_reaction' in data:
-                if data['default_biomass_reaction'] not in model.reactions:
+            if "default_biomass_reaction" in data:
+                if data["default_biomass_reaction"] not in model.reactions:
                     raise ValidationError(
                         f"The biomass reaction "
                         f"'{data['default_biomass_reaction']}' does not exist "

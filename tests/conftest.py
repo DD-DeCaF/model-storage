@@ -70,20 +70,14 @@ def connection():
 def tokens(app):
     """Provide read, write and admin JWT claims to project 4."""
     return {
-        'read': jwt.encode(
-            {'prj': {4: 'read'}},
-            app.config['JWT_PRIVATE_KEY'],
-            'RS512',
+        "read": jwt.encode(
+            {"prj": {4: "read"}}, app.config["JWT_PRIVATE_KEY"], "RS512"
         ),
-        'write': jwt.encode(
-            {'prj': {4: 'write'}},
-            app.config['JWT_PRIVATE_KEY'],
-            'RS512',
+        "write": jwt.encode(
+            {"prj": {4: "write"}}, app.config["JWT_PRIVATE_KEY"], "RS512"
         ),
-        'admin': jwt.encode(
-            {'prj': {4: 'admin'}},
-            app.config['JWT_PRIVATE_KEY'],
-            'RS512',
+        "admin": jwt.encode(
+            {"prj": {4: "admin"}}, app.config["JWT_PRIVATE_KEY"], "RS512"
         ),
     }
 
@@ -100,8 +94,7 @@ def session(reset_tables, connection):
     """
     flask_sqlalchemy_session = db_.session
     transaction = connection.begin()
-    db_.session = db_.create_scoped_session(
-        options={"bind": connection, "binds": {}})
+    db_.session = db_.create_scoped_session(options={"bind": connection, "binds": {}})
     yield db_.session
     db_.session.close()
     transaction.rollback()
@@ -118,10 +111,14 @@ def e_coli_core():
 @pytest.fixture(scope="session")
 def model(reset_tables):
     """Return a fixture with test data for the Model data model."""
-    fixture = Model(name="iJO1366", organism_id=4,
-                    project_id=4, default_biomass_reaction="BIOMASS",
-                    model_serialized={"Reactions": [{"GAPDH": "x->y"}]},
-                    ec_model=False)
+    fixture = Model(
+        name="iJO1366",
+        organism_id=4,
+        project_id=4,
+        default_biomass_reaction="BIOMASS",
+        model_serialized={"Reactions": [{"GAPDH": "x->y"}]},
+        ec_model=False,
+    )
     db_.session.add(fixture)
     db_.session.commit()
     return fixture

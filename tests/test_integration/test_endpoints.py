@@ -20,9 +20,7 @@ import pytest
 
 def test_models_get(client, session, model, tokens):
     """Test the /models GET API supposed to return all models in the DB."""
-    resp = client.get("/models", headers={
-        'Authorization': f"Bearer {tokens['read']}",
-    })
+    resp = client.get("/models", headers={"Authorization": f"Bearer {tokens['read']}"})
     assert resp.status_code == 200
     assert len(resp.json) == 1
 
@@ -39,28 +37,22 @@ def test_models_post(client, session, tokens, e_coli_core):
         "ec_model": False,
     }
 
-    resp = client.post("/models", json=new_model, headers={
-        'Authorization': f"Bearer {tokens['write']}",
-    })
+    resp = client.post(
+        "/models",
+        json=new_model,
+        headers={"Authorization": f"Bearer {tokens['write']}"},
+    )
     assert resp.status_code == 201
 
 
-@pytest.mark.parametrize("url, code", [
-    ("/models/1", 200),
-    ("/models/10", 404),
-])
+@pytest.mark.parametrize("url, code", [("/models/1", 200), ("/models/10", 404)])
 def test_indvmodel_get(client, session, model, tokens, url, code):
     """Test the /models/<id> GET API supposed to get a single model by ID."""
-    resp = client.get(url, headers={
-        'Authorization': f"Bearer {tokens['read']}",
-    })
+    resp = client.get(url, headers={"Authorization": f"Bearer {tokens['read']}"})
     assert resp.status_code == code
 
 
-@pytest.mark.parametrize("url, code", [
-    ("/models/1", 204),
-    ("/models/10", 404),
-])
+@pytest.mark.parametrize("url, code", [("/models/1", 204), ("/models/10", 404)])
 def test_indvmodel_put(client, session, model, tokens, url, code, e_coli_core):
     """Test the /models/<id> PUT API supposed to modify a single model by ID."""
     updated_model = {
@@ -70,21 +62,16 @@ def test_indvmodel_put(client, session, model, tokens, url, code, e_coli_core):
         "project_id": 1,
         "default_biomass_reaction": "BIOMASS_Ecoli_core_w_GAM",
         "preferred_map_id": 1,
-        "ec_model": False
+        "ec_model": False,
     }
-    resp = client.put(url, json=updated_model, headers={
-        'Authorization': f"Bearer {tokens['write']}",
-    })
+    resp = client.put(
+        url, json=updated_model, headers={"Authorization": f"Bearer {tokens['write']}"}
+    )
     assert resp.status_code == code
 
 
-@pytest.mark.parametrize("url, code", [
-    ("/models/1", 204),
-    ("/models/10", 404),
-])
+@pytest.mark.parametrize("url, code", [("/models/1", 204), ("/models/10", 404)])
 def test_indvmodel_delete(client, session, model, tokens, url, code):
     """Test the /models/<id> PUT API supposed to remove a single model by ID."""
-    resp = client.delete(url, headers={
-        'Authorization': f"Bearer {tokens['admin']}",
-    })
+    resp = client.delete(url, headers={"Authorization": f"Bearer {tokens['admin']}"})
     assert resp.status_code == code

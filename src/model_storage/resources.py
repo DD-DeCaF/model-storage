@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 def init_app(app):
     """Register API resources on the provided Flask application."""
+
     def register(path, resource):
         app.add_url_rule(path, view_func=resource.as_view(resource.__name__))
         with warnings.catch_warnings():
@@ -47,31 +48,36 @@ def init_app(app):
 class Models(MethodResource):
     """Serve all available models or create new entries."""
 
-    @marshal_with(ModelSchema(many=True, exclude=('model_serialized',)), 200)
+    @marshal_with(ModelSchema(many=True, exclude=("model_serialized",)), 200)
     def get(self):
         """List all available models."""
         logger.debug("Retrieving all models")
-        return Model.query.options(load_only(
-            Model.id,
-            Model.name,
-            Model.organism_id,
-            Model.project_id,
-            Model.preferred_map_id,
-            Model.default_biomass_reaction,
-            Model.ec_model,
-        )).filter(
-            Model.project_id.in_(g.jwt_claims['prj']) |
-            Model.project_id.is_(None)
-        ).all()
+        return (
+            Model.query.options(
+                load_only(
+                    Model.id,
+                    Model.name,
+                    Model.organism_id,
+                    Model.project_id,
+                    Model.preferred_map_id,
+                    Model.default_biomass_reaction,
+                    Model.ec_model,
+                )
+            )
+            .filter(
+                Model.project_id.in_(g.jwt_claims["prj"]) | Model.project_id.is_(None)
+            )
+            .all()
+        )
 
-    @use_kwargs(ModelSchema(exclude=('id',)))
-    @marshal_with(ModelSchema(only=('id',)), code=201)
+    @use_kwargs(ModelSchema(exclude=("id",)))
+    @marshal_with(ModelSchema(only=("id",)), code=201)
     @jwt_required
     def post(self, **payload):
         """Create a new model."""
         logger.debug("Creating a new model in the model storage")
-        if 'project_id' in payload:
-            jwt_require_claim(payload['project_id'], 'write')
+        if "project_id" in payload:
+            jwt_require_claim(payload["project_id"], "write")
         new_model = Model(**payload)
         db.session.add(new_model)
         db.session.commit()
@@ -87,16 +93,18 @@ class IndvModel(MethodResource):
         """Return a model by ID."""
         logger.debug(f"Fetching model by ID {id}.")
         try:
-            return Model.query.filter(
-                Model.id == id
-            ).filter(
-                Model.project_id.in_(g.jwt_claims['prj']) |
-                Model.project_id.is_(None)
-            ).one()
+            return (
+                Model.query.filter(Model.id == id)
+                .filter(
+                    Model.project_id.in_(g.jwt_claims["prj"])
+                    | Model.project_id.is_(None)
+                )
+                .one()
+            )
         except NoResultFound:
             abort(404, f"Cannot find any model with ID {id}.")
 
-    @use_kwargs(ModelSchema(exclude=('id',), partial=True))
+    @use_kwargs(ModelSchema(exclude=("id",), partial=True))
     @marshal_with(None, code=204)
     @marshal_with(None, code=404)
     @jwt_required
@@ -107,7 +115,7 @@ class IndvModel(MethodResource):
             model = Model.query.filter(Model.id == id).one()
         except NoResultFound:
             abort(404, f"Cannot find any model with ID {id}.")
-        jwt_require_claim(model.project_id, 'write')
+        jwt_require_claim(model.project_id, "write")
         for key, value in payload.items():
             setattr(model, key, value)
         db.session.commit()
@@ -123,7 +131,7 @@ class IndvModel(MethodResource):
             model = Model.query.filter(Model.id == id).one()
         except NoResultFound:
             abort(404, f"Cannot find any model with ID {id}.")
-        jwt_require_claim(model.project_id, 'admin')
+        jwt_require_claim(model.project_id, "admin")
         db.session.delete(model)
         db.session.commit()
         return make_response("", 204)
