@@ -39,6 +39,7 @@ def test_post_no_token(client, session, model, e_coli_core):
         'model_serialized': e_coli_core,
         'default_biomass_reaction': "BIOMASS_Ecoli_core_w_GAM",
         "preferred_map_id": 1,
+        "ec_model": False,
     })
     assert response.status_code == 401
 
@@ -52,6 +53,7 @@ def test_post_token(client, session, model, tokens, e_coli_core):
         'default_biomass_reaction': "BIOMASS_Ecoli_core_w_GAM",
         'model_serialized': e_coli_core,
         "preferred_map_id": 1,
+        "ec_model": False,
     }
     response = client.post("/models", json=test_model, headers={
         'Authorization': f"Bearer {tokens['write']}",

@@ -35,7 +35,8 @@ def test_models_post(client, session, tokens, e_coli_core):
         "organism_id": 1,
         "project_id": 4,
         "default_biomass_reaction": "BIOMASS_Ecoli_core_w_GAM",
-        "preferred_map_id": 1
+        "preferred_map_id": 1,
+        "ec_model": False,
     }
 
     resp = client.post("/models", json=new_model, headers={
@@ -68,7 +69,8 @@ def test_indvmodel_put(client, session, model, tokens, url, code, e_coli_core):
         "organism_id": 1,
         "project_id": 1,
         "default_biomass_reaction": "BIOMASS_Ecoli_core_w_GAM",
-        "preferred_map_id": 1
+        "preferred_map_id": 1,
+        "ec_model": False
     }
     resp = client.put(url, json=updated_model, headers={
         'Authorization': f"Bearer {tokens['write']}",

@@ -6,7 +6,8 @@
     "model_serialized": {"this is a model": [{"Trust me it is": "Like yeah totally bro!"}]},
     "organism_id": 1,
     "project_id": 4,
-    "default_biomass_reaction": "BIOMASS"
+    "default_biomass_reaction": "BIOMASS",
+    "ec_model": false
 },
   {
     "id": 1,
@@ -14,6 +15,6 @@
     "model_serialized": {"this is a model too": [{"Yup": "Model here!"}]},
     "organism_id": 6,
     "project_id": null,
-    "default_biomass_reaction": "BIO_GROWTH_2"
+    "ec_model": true
 }]
 }

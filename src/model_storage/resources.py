@@ -55,6 +55,7 @@ class Models(MethodResource):
             Model.project_id,
             Model.preferred_map_id,
             Model.default_biomass_reaction,
+            Model.ec_model,
         )).filter(
             Model.project_id.in_(g.jwt_claims['prj']) |
             Model.project_id.is_(None)

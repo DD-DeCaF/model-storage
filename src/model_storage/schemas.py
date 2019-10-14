@@ -28,6 +28,7 @@ class Model(Schema):
     )
     default_biomass_reaction = fields.String(required=True)
     preferred_map_id = fields.Integer(allow_none=True)
+    ec_model = fields.Boolean(required=True)
 
     @validates_schema
     def validate_biomass(self, data):

@@ -120,7 +120,8 @@ def model(reset_tables):
     """Return a fixture with test data for the Model data model."""
     fixture = Model(name="iJO1366", organism_id=4,
                     project_id=4, default_biomass_reaction="BIOMASS",
-                    model_serialized={"Reactions": [{"GAPDH": "x->y"}]})
+                    model_serialized={"Reactions": [{"GAPDH": "x->y"}]},
+                    ec_model=False)
     db_.session.add(fixture)
     db_.session.commit()
     return fixture
