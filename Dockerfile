@@ -18,12 +18,9 @@ ARG CWD="/app"
 ENV PYTHONPATH="${CWD}/src"
 WORKDIR "${CWD}"
 
-COPY requirements.in dev-requirements.in ./
+COPY requirements ./requirements
 
-# Use pip, not pip-tools, to work around currently failing builds.
-# See https://travis-ci.org/DD-DeCaF/model-storage/builds/559422328
-# and https://travis-ci.org/DD-DeCaF/modeling-base/builds/559346414
-RUN pip install -r dev-requirements.in -r requirements.in
+RUN pip-sync requirements/requirements.txt
 
 COPY . "${CWD}/"
 
