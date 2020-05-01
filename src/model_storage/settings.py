@@ -67,7 +67,8 @@ class Default:
             "disable_existing_loggers": False,
             "formatters": {
                 "simple": {
-                    "format": "%(asctime)s [%(levelname)s] [%(name)s] " "%(message)s"
+                    "format": "%(asctime)s [%(levelname)s] [%(name)s] "
+                    "%(message)s"
                 }
             },
             "handlers": {
@@ -90,9 +91,9 @@ class Default:
             "{POSTGRES_PORT}/{POSTGRES_DB_NAME}".format(**os.environ)
         )
         self.SQLALCHEMY_TRACK_MODIFICATIONS = False
-        self.JWT_PUBLIC_KEY = requests.get(f"{os.environ['IAM_API']}/keys").json()[
-            "keys"
-        ][0]
+        self.JWT_PUBLIC_KEY = requests.get(
+            f"{os.environ['IAM_API']}/keys"
+        ).json()["keys"][0]
 
 
 class Development(Default):

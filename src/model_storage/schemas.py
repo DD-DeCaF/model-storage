@@ -23,7 +23,8 @@ class Model(Schema):
     organism_id = fields.Integer(required=True)
     project_id = fields.Integer(required=True)
     model_serialized = fields.Raw(
-        description="A metabolic model serialized to JSON by cobrapy", required=True
+        description="A metabolic model serialized to JSON by cobrapy",
+        required=True,
     )
     default_biomass_reaction = fields.String(required=True)
     preferred_map_id = fields.Integer(allow_none=True)
