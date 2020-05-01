@@ -31,7 +31,7 @@ class Model(Schema):
     ec_model = fields.Boolean(required=True)
 
     @validates_schema
-    def validate_biomass(self, data):
+    def validate_biomass(self, data, partial, many):
         if "model_serialized" in data:
             # Validate that the model can be loaded by cobrapy
             try:
