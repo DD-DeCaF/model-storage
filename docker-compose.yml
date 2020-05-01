@@ -4,7 +4,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: gcr.io/dd-decaf-cfbf6/model-storage:${IMAGE_TAG:-latest}
+      args:
+        - BASE_TAG=${BASE_TAG}
+        - BUILD_COMMIT=${BUILD_COMMIT:-unknown}
+        - BUILD_TIMESTAMP=${BUILD_TIMESTAMP:-unknown}
+    image: gcr.io/dd-decaf-cfbf6/model-storage:${BRANCH:-latest}
     depends_on:
       - postgres
     networks:
@@ -28,10 +32,11 @@ services:
       - POSTGRES_USERNAME=${POSTGRES_USERNAME:-postgres}
       - POSTGRES_PASS=${POSTGRES_PASS}
       - IAM_API=${IAM_API:-https://api-staging.dd-decaf.eu/iam}
-    command: gunicorn -c gunicorn.py model_storage.wsgi:app
 
   postgres:
     image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
     volumes:
       - /var/lib/postgresql/data
     networks:

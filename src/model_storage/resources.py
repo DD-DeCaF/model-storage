@@ -65,7 +65,8 @@ class Models(MethodResource):
                 )
             )
             .filter(
-                Model.project_id.in_(g.jwt_claims["prj"]) | Model.project_id.is_(None)
+                Model.project_id.in_(g.jwt_claims["prj"])
+                | Model.project_id.is_(None)
             )
             .all()
         )
