@@ -38,7 +38,7 @@ script:
 - make style
 - make safety
 # Run the tests and report coverage (see https://docs.codecov.io/docs/testing-with-docker).
-- docker-compose exec -e ENVIRONMENT=testing web pytest --cov=metabolic_ninja --cov-report=term --cov-report=xml
+- docker-compose exec -e ENVIRONMENT=testing web pytest --cov=model_storage --cov-report=term --cov-report=xml
 - bash <(curl -s https://codecov.io/bash)
 
 before_deploy:
