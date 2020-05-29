@@ -22,11 +22,10 @@ ARG BUILD_COMMIT
 ARG BUILD_TIMESTAMP
 
 LABEL dk.dtu.biosustain.model-storage.debian.vendor="Novo Nordisk Foundation \
-Center for Biosustainability, Technical University of Denmark" \
-    maintainer="niso@biosustain.dtu.dk" \
-    dk.dtu.biosustain.model-storage.debian.build.base-tag="${BASE_TAG}" \
-    dk.dtu.biosustain.model-storage.debian.build.commit="${BUILD_COMMIT}" \
-    dk.dtu.biosustain.model-storage.debian.build.timestamp="${BUILD_TIMESTAMP}"
+Center for Biosustainability, Technical University of Denmark"
+LABEL maintainer="niso@biosustain.dtu.dk"
+LABEL dk.dtu.biosustain.model-storage.debian.build.base-tag="${BASE_TAG}"
+LABEL dk.dtu.biosustain.model-storage.debian.build.commit="${BUILD_COMMIT}"
 
 ARG CWD="/app"
 
